@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gq.baijie.simpleim.prototype.client.javafx.ui.login.Controller">
    <children>
       <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0">
          <children>
@@ -22,17 +21,17 @@
                   <Insets bottom="16.0" />
                </VBox.margin>
             </Label>
-            <TextField promptText="Account ID">
+            <TextField fx:id="accountIdInput" promptText="Account ID">
                <VBox.margin>
                   <Insets bottom="16.0" />
                </VBox.margin>
             </TextField>
-            <PasswordField promptText="Password">
+            <PasswordField fx:id="passwordInput" promptText="Password">
                <VBox.margin>
                   <Insets bottom="16.0" />
                </VBox.margin>
             </PasswordField>
-            <Button defaultButton="true" mnemonicParsing="false" text="Login" />
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" text="Login" />
          </children>
       </VBox>
    </children>
