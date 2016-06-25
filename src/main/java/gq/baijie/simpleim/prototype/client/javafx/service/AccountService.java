@@ -17,13 +17,14 @@ public class AccountService {
   }
 
   public LoginResult login(@Nonnull String accountId, @Nonnull String password) {
-    if (sessionService.haveLoggedIn) {
+    if (sessionService.haveLoggedIn()) {
       throw new IllegalStateException("have logged in");
     }
     if (!ACCOUNTS.containsKey(accountId)) {
       return LoginResult.NO_ACCOUNT;
     }
     if (ACCOUNTS.get(accountId).password.equals(password)) {
+      sessionService.gotoHaveLoggedInState(accountId);
       return LoginResult.SUCCESS;
     } else {
       return LoginResult.PASSWORD_ERROR;
@@ -31,6 +32,7 @@ public class AccountService {
   }
 
   public void logout() {
+    sessionService.gotoHaveLoggedOutState();
   }
 
   public enum LoginResult {
