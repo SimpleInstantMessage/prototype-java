@@ -22,6 +22,10 @@ public class SessionService {
   public SessionService() {
   }
 
+  public State getState() {
+    return state;
+  }
+
   public Observable<ChangeEvent<State>> getStateChangeEvents() {
     return stateChangeEvents.asObservable();
   }
