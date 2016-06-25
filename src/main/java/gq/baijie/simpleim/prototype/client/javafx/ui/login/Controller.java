@@ -29,9 +29,19 @@ public class Controller {
 
   @FXML
   private void handleLogin() {
-    String errorMessage = "";
     final String accountId = accountIdInput.getText();
     final String password = passwordInput.getText();
+    if (validateInput(accountId, password)) {
+      final AccountService.LoginResult loginResult = accountService.login(accountId, password);
+      if (loginResult != AccountService.LoginResult.SUCCESS) {
+        errorMessageOutput.setText(loginResult.toString());
+        errorMessageOutput.setVisible(true);
+      }
+    }
+  }
+
+  private boolean validateInput(String accountId, String password) {
+    String errorMessage = "";
     if (accountId.isEmpty()) {
       errorMessage += "Account ID is required\n";
     }
@@ -39,11 +49,12 @@ public class Controller {
       errorMessage += "Password is required\n";
     }
     if (errorMessage.isEmpty()) {
-      accountService.login(accountId, password);
       errorMessageOutput.setVisible(false);
+      return true;
     } else {
       errorMessageOutput.setText(errorMessage);
       errorMessageOutput.setVisible(true);
+      return false;
     }
   }
 
