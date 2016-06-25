@@ -21,6 +21,11 @@
                   <Insets bottom="16.0" />
                </VBox.margin>
             </Label>
+            <Label fx:id="errorMessageOutput" textFill="RED" visible="false">
+               <VBox.margin>
+                  <Insets bottom="16.0" />
+               </VBox.margin>
+            </Label>
             <TextField fx:id="accountIdInput" promptText="Account ID">
                <VBox.margin>
                   <Insets bottom="16.0" />
