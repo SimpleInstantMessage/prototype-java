@@ -3,6 +3,7 @@ package gq.baijie.simpleim.prototype.client.javafx.ui.login;
 import gq.baijie.simpleim.prototype.client.javafx.Main;
 import gq.baijie.simpleim.prototype.client.javafx.service.AccountService;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -22,6 +23,26 @@ public class Controller {
 
   public Controller() {
     accountService = Main.INSTANCE.serviceComponent.getAccountService();
+  }
+
+  @FXML
+  private void handleRegister() {
+    final String accountId = accountIdInput.getText();
+    final String password = passwordInput.getText();
+    if (validateInput(accountId, password)) {
+      AccountService.RegisterResult registerResult = accountService.register(accountId, password);
+      if (registerResult != AccountService.RegisterResult.SUCCESS) {
+        errorMessageOutput.setText(registerResult.toString());
+        errorMessageOutput.setVisible(true);
+      } else {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Register Result");
+        alert.setHeaderText("Congratulations");
+        alert.setContentText("Register successfully!");
+
+        alert.showAndWait();
+      }
+    }
   }
 
   @FXML

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -36,7 +37,15 @@
                   <Insets bottom="16.0" />
                </VBox.margin>
             </PasswordField>
-            <Button defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" text="Login" />
+            <HBox alignment="CENTER" prefWidth="200.0">
+               <children>
+                  <Button defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" text="Login">
+                     <HBox.margin>
+                        <Insets right="16.0" />
+                     </HBox.margin></Button>
+                <Button mnemonicParsing="false" onAction="#handleRegister" text="Register" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>

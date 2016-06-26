@@ -16,6 +16,14 @@ public class AccountService {
   public AccountService() {
   }
 
+  public RegisterResult register(@Nonnull String accountId, @Nonnull String password) {
+    if (ACCOUNTS.containsKey(accountId)) {
+      return RegisterResult.DUPLICATED_ACCOUNT_ID;
+    }
+    ACCOUNTS.put(accountId, new DummyAccounts.Account(accountId, password));
+    return RegisterResult.SUCCESS;
+  }
+
   public LoginResult login(@Nonnull String accountId, @Nonnull String password) {
     if (sessionService.haveLoggedIn()) {
       throw new IllegalStateException("have logged in");
@@ -33,6 +41,11 @@ public class AccountService {
 
   public void logout() {
     sessionService.gotoHaveLoggedOutState();
+  }
+
+  public enum RegisterResult {
+    SUCCESS,
+    DUPLICATED_ACCOUNT_ID
   }
 
   public enum LoginResult {
