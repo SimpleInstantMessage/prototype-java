@@ -1,0 +1,5 @@
+apply plugin: 'application'
+
+group = "${group}.server"
+
+mainClassName = "${group}.Main"
