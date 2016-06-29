@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package message;
+option java_package = "gq.baijie.simpleim.prototype.server.proto.message";
+
+import "google/protobuf/any.proto";
+
+message Frame {
+  oneof message {
+    Request request = 1;
+    Response response = 2;
+  }
+}
+
+message Request {
+  uint32 id = 1;
+  string function = 2;
+  google.protobuf.Any message = 3;
+}
+
+message Response {
+  uint32 id = 1;
+  oneof result {
+    google.protobuf.Any success_message = 2;
+    // when success == false
+    google.protobuf.Any failure_cause = 3;
+  }
+}
