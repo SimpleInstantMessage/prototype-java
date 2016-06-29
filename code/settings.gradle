@@ -15,5 +15,6 @@ include 'shared'
 include 'api'
 include 'services:webservice'
 */
+include 'client-javafx'
 
-rootProject.name = 'prototype-client-javafx'
+rootProject.name = 'prototype'
