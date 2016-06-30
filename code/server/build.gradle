@@ -8,6 +8,16 @@ group = "${group}.server"
 
 mainClassName = "${group}.Main"
 
+dependencies {
+  def daggerVersion = '2.5'
+
+  compile "com.google.dagger:dagger:$daggerVersion"
+  compileOnly "com.google.dagger:dagger-compiler:$daggerVersion"
+  compile 'io.reactivex:rxjava:1.1.6'
+}
+
+// ---- Protocol Buffers Start ----
+
 def protobufVersion = '3.0.0-beta-3'
 
 dependencies {
@@ -29,3 +39,5 @@ idea {
     sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java");
   }
 }
+
+// ---- Protocol Buffers End ----
