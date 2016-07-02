@@ -5,21 +5,28 @@ option java_package = "gq.baijie.simpleim.prototype.server.proto.message";
 
 import "google/protobuf/any.proto";
 
-message Frame {
-  oneof message {
-    Request request = 1;
-    Response response = 2;
-  }
+enum TransactionState {
+  UNSET = 0;
+  FIRST = 1;
+  KEEP = 2;
+  LAST = 3;
 }
 
+message Frame {
+  uint32 transaction_id = 1;
+  TransactionState transaction_state = 2;
+  oneof message {
+    Request request = 3;
+    Response response = 4;
+  }
+}
+//TODO
 message Request {
-  uint32 id = 1;
   string function = 2;
   google.protobuf.Any message = 3;
 }
 
 message Response {
-  uint32 id = 1;
   oneof result {
     google.protobuf.Any success_message = 2;
     // when success == false
