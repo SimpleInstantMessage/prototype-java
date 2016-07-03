@@ -14,6 +14,7 @@ public class MessageFrameInboundHandler3 extends MessageFrameInboundHandler2 /*i
     transactionManager.newTransaction().send(echoRequest, frame -> {
       System.out.println("received response:");
       System.out.println(frame);
+      ctx.close();
     });
     super.channelActive(ctx);
   }
