@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
 
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.server.proto.message.Message;
@@ -14,6 +17,22 @@ public class TransactionManager {
   final MessageFrameInboundHandler2 handler;
 
   Map<Integer, Transaction> transactions = new HashMap<>();
+
+  BiConsumer<Transaction, Message.Frame> initRequestHandler = (transactions, frame) -> {
+    final Message.Request frameRequest = frame.getRequest();
+    switch (frameRequest.getFunction()) {//TODO
+      case "echo":
+        transactions.send(frame.toBuilder()
+                 .setTransactionState(Message.TransactionState.LAST)
+                 .setResponse(Message.Response.newBuilder()
+                                  .setSuccessMessage(frameRequest.getMessage())
+                                  .build()));
+        break;
+      default:
+        //TODO error
+        break;
+    }
+  };
 
   public TransactionManager(MessageFrameInboundHandler2 handler) {
     this.handler = handler;
@@ -40,6 +59,7 @@ public class TransactionManager {
           return null;
         } else {
           final Transaction transaction = new Transaction(frame.getTransactionId());
+          transaction.setRequestHandler(initRequestHandler);
           transactions.put(frame.getTransactionId(), transaction);
           return transaction;
         }
@@ -79,27 +99,23 @@ public class TransactionManager {
 
     public final int id;
 
+    BiConsumer<Transaction, Message.Frame> requestHandler;
+
     Queue<Request> pendingRequests = new LinkedList<>();
 
     public Transaction(int id) {
       this.id = id;
     }
 
+    public void setRequestHandler(@Nullable BiConsumer<Transaction, Message.Frame> requestHandler) {
+      this.requestHandler = requestHandler;
+    }
+
     public void onReceive(Message.Frame frame) {
       switch (frame.getMessageCase()) {
         case REQUEST:
-          final Message.Request frameRequest = frame.getRequest();
-          switch (frameRequest.getFunction()) {//TODO
-            case "echo":
-              send(frame.toBuilder()
-                       .setTransactionState(Message.TransactionState.LAST)
-                       .setResponse(Message.Response.newBuilder()
-                                        .setSuccessMessage(frameRequest.getMessage())
-                                        .build()));
-              break;
-            default:
-              //TODO error
-              break;
+          if (requestHandler != null) {
+            requestHandler.accept(this, frame);
           }
           break;
         case RESPONSE:
