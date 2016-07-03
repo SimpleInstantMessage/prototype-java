@@ -1,6 +1,9 @@
 package gq.baijie.simpleim.prototype.server.io.network.netty;
 
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
+
+import javax.annotation.Nullable;
 
 import gq.baijie.simpleim.prototype.server.io.network.netty.business.TransactionManager;
 import gq.baijie.simpleim.prototype.server.proto.message.Message;
@@ -16,9 +19,19 @@ public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter /*
 
   private final String address = "client:$id";
 
-  final TransactionManager transactionManager = new TransactionManager(this);
+  final TransactionManager transactionManager;
 
   private ChannelHandlerContext ctx;
+
+  public MessageFrameInboundHandler2() {
+    this(null);
+  }
+
+  public MessageFrameInboundHandler2(
+      @Nullable BiConsumer<TransactionManager.Transaction, Message.Frame> initRequestHandler) {
+    transactionManager = new TransactionManager(this);
+    transactionManager.setInitRequestHandler(initRequestHandler);
+  }
 
   @Override
   public void handlerAdded(ChannelHandlerContext ctx) throws Exception {

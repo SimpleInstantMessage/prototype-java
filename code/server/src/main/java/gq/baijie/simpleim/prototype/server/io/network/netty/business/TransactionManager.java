@@ -18,24 +18,16 @@ public class TransactionManager {
 
   Map<Integer, Transaction> transactions = new HashMap<>();
 
-  BiConsumer<Transaction, Message.Frame> initRequestHandler = (transactions, frame) -> {
-    final Message.Request frameRequest = frame.getRequest();
-    switch (frameRequest.getFunction()) {//TODO
-      case "echo":
-        transactions.send(frame.toBuilder()
-                 .setTransactionState(Message.TransactionState.LAST)
-                 .setResponse(Message.Response.newBuilder()
-                                  .setSuccessMessage(frameRequest.getMessage())
-                                  .build()));
-        break;
-      default:
-        //TODO error
-        break;
-    }
-  };
+  @Nullable
+  BiConsumer<Transaction, Message.Frame> initRequestHandler;
 
   public TransactionManager(MessageFrameInboundHandler2 handler) {
     this.handler = handler;
+  }
+
+  public void setInitRequestHandler(
+      @Nullable BiConsumer<Transaction, Message.Frame> initRequestHandler) {
+    this.initRequestHandler = initRequestHandler;
   }
 
   public void onReceive(Message.Frame frame) {

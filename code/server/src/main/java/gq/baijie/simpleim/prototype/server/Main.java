@@ -1,11 +1,15 @@
 package gq.baijie.simpleim.prototype.server;
 
+import java.util.function.BiConsumer;
+
 import gq.baijie.simpleim.prototype.server.inject.DaggerServiceComponent;
 import gq.baijie.simpleim.prototype.server.inject.ServiceComponent;
 import gq.baijie.simpleim.prototype.server.io.network.netty.FrameToMessageFrameInboundHandler;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler3;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameToFrameOutboundHandler;
+import gq.baijie.simpleim.prototype.server.io.network.netty.business.TransactionManager;
+import gq.baijie.simpleim.prototype.server.proto.message.Message;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -40,6 +44,23 @@ public class Main {
   }
 
   private static void tryNettyServer(int port) {
+    BiConsumer<TransactionManager.Transaction, Message.Frame>
+        initRequestHandler = (transactions, frame) -> {
+      final Message.Request frameRequest = frame.getRequest();
+      switch (frameRequest.getFunction()) {//TODO
+        case "echo":
+          transactions.send(frame.toBuilder()
+                                .setTransactionState(Message.TransactionState.LAST)
+                                .setResponse(Message.Response.newBuilder()
+                                                 .setSuccessMessage(frameRequest.getMessage())
+                                                 .build()));
+          break;
+        default:
+          //TODO error
+          break;
+      }
+    };
+
     EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {
@@ -59,7 +80,7 @@ public class Main {
                   .addLast(new ProtobufVarint32FrameDecoder())
                   .addLast(new FrameToMessageFrameInboundHandler())
                   // business
-                  .addLast(new MessageFrameInboundHandler2());
+                  .addLast(new MessageFrameInboundHandler2(initRequestHandler));
             }
           })
           .option(ChannelOption.SO_BACKLOG, 128)          // (5)
