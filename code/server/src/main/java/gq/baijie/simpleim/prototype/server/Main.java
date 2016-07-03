@@ -3,7 +3,6 @@ package gq.baijie.simpleim.prototype.server;
 import gq.baijie.simpleim.prototype.server.inject.DaggerServiceComponent;
 import gq.baijie.simpleim.prototype.server.inject.ServiceComponent;
 import gq.baijie.simpleim.prototype.server.io.network.netty.FrameToMessageFrameInboundHandler;
-import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler1;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler3;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameToFrameOutboundHandler;
@@ -106,8 +105,6 @@ public class Main {
               .addLast(new ProtobufVarint32FrameDecoder())
               .addLast(new FrameToMessageFrameInboundHandler())
               // business
-//              .addLast(new MessageFrameInboundHandler2())
-//              .addLast(new MessageFrameInboundHandler1());
               .addLast(new MessageFrameInboundHandler3());
 //            addLast(new ClientHandler())
 //            .addLast(new CreateAccountHandler());
