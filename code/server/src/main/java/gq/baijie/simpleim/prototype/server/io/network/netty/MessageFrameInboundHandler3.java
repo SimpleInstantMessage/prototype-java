@@ -11,7 +11,10 @@ public class MessageFrameInboundHandler3 extends MessageFrameInboundHandler2 /*i
     final Message.Frame.Builder echoRequest = Message.Frame.newBuilder()
         .setTransactionState(Message.TransactionState.FIRST)
         .setRequest(Message.Request.newBuilder().setFunction("echo").build());
-    transactionManager.newTransaction().send(echoRequest);
+    transactionManager.newTransaction().send(echoRequest, frame -> {
+      System.out.println("received response:");
+      System.out.println(frame);
+    });
     super.channelActive(ctx);
   }
 

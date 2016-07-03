@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.server.proto.message.Message;
@@ -113,10 +114,14 @@ public class TransactionManager {
     }
 
     public void send(Message.Frame.Builder frameBuilder) {
+      send(frameBuilder, null);
+    }
+
+    public void send(Message.Frame.Builder frameBuilder, Consumer<Message.Frame> responseHandler) {
       Message.Frame frame = frameBuilder.setTransactionId(id).build();
       switch (frame.getMessageCase()) {
         case REQUEST:
-          Request request = new Request();
+          Request request = new Request(responseHandler);
           pendingRequests.offer(request);
           TransactionManager.this.send(frame);
           break;
@@ -133,9 +138,17 @@ public class TransactionManager {
 
 
     class Request {
+
+      private final Consumer<Message.Frame> responseHandler;
+
+      Request(Consumer<Message.Frame> responseHandler) {
+        this.responseHandler = responseHandler;
+      }
+
       public void onReceive(Message.Frame frame) {
-        System.out.println("at Request.onReceive()");
-        System.out.println(frame);
+        if (responseHandler != null) {
+          responseHandler.accept(frame);
+        }
       }
 
       public void send(Message.Frame frame) {
