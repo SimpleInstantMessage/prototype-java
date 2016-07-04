@@ -21,6 +21,7 @@ public class SystemManagerService {
   /**
    * Run {@link #getStartTaskList()} in {@link ThreadService#getMainExecutorService()}
    */
+  //TODO shouldn't start twice
   public void start() {
     threadService.getMainExecutorService().submit(()->startTaskList.forEach(Runnable::run));
   }

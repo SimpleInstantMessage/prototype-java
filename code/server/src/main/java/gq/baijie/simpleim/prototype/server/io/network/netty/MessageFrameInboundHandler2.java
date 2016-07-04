@@ -19,7 +19,7 @@ public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter /*
 
   private final String address = "client:$id";
 
-  final TransactionManager transactionManager;
+  private final TransactionManager transactionManager;
 
   private ChannelHandlerContext ctx;
 
@@ -31,6 +31,10 @@ public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter /*
       @Nullable BiConsumer<TransactionManager.Transaction, Message.Frame> initRequestHandler) {
     transactionManager = new TransactionManager(this);
     transactionManager.setInitRequestHandler(initRequestHandler);
+  }
+
+  public TransactionManager getTransactionManager() {
+    return transactionManager;
   }
 
   @Override
@@ -64,7 +68,14 @@ public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter /*
 
   private static void close(ChannelHandlerContext ctx) {
     ctx.close();
-    ctx.channel().parent().close();
+//    ctx.channel().parent().close();
+  }
+
+  //TODO return Future object
+  public void close() {
+    if (ctx != null) { //TODO ctx == null
+      close(ctx);
+    }
   }
 
   public void send(Message.Frame frame) {

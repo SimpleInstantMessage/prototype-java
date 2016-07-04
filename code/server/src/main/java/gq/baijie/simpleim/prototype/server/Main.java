@@ -3,8 +3,9 @@ package gq.baijie.simpleim.prototype.server;
 import gq.baijie.simpleim.prototype.server.inject.DaggerServiceComponent;
 import gq.baijie.simpleim.prototype.server.inject.ServiceComponent;
 import gq.baijie.simpleim.prototype.server.io.network.netty.FrameToMessageFrameInboundHandler;
-import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler3;
+import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameToFrameOutboundHandler;
+import gq.baijie.simpleim.prototype.server.proto.message.Message;
 import gq.baijie.simpleim.prototype.server.service.NettyServerService;
 import gq.baijie.simpleim.prototype.server.service.SystemManagerService;
 import io.netty.bootstrap.Bootstrap;
@@ -49,6 +50,9 @@ public class Main {
     EventLoopGroup workerGroup = new NioEventLoopGroup();
 
     try {
+
+      final MessageFrameInboundHandler2 businessHandler = new MessageFrameInboundHandler2();
+
       Bootstrap b = new Bootstrap(); // (1)
       b.group(workerGroup); // (2)
       b.channel(NioSocketChannel.class); // (3)
@@ -66,7 +70,7 @@ public class Main {
               .addLast(new ProtobufVarint32FrameDecoder())
               .addLast(new FrameToMessageFrameInboundHandler())
               // business
-              .addLast(new MessageFrameInboundHandler3());
+              .addLast(businessHandler);
 //            addLast(new ClientHandler())
 //            .addLast(new CreateAccountHandler());
         }
@@ -80,11 +84,25 @@ public class Main {
       f.channel().closeFuture().addListener(listener -> {
         workerGroup.shutdownGracefully();
       });
+
+      sendEchoRequest(businessHandler);
+
     } catch (InterruptedException e) {
       e.printStackTrace();
     } finally {
 //      workerGroup.shutdownGracefully();
     }
+  }
+
+  private static void sendEchoRequest(MessageFrameInboundHandler2 businessHandler) {
+    final Message.Frame.Builder echoRequest = Message.Frame.newBuilder()
+        .setTransactionState(Message.TransactionState.FIRST)
+        .setRequest(Message.Request.newBuilder().setFunction("echo").build());
+    businessHandler.getTransactionManager().newTransaction().send(echoRequest, frame -> {
+      System.out.println("received response:");
+      System.out.println(frame);
+      businessHandler.close();
+    });
   }
 
   private static void println(Object o) {
