@@ -23,6 +23,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.logging.LoggingHandler;
 
 @Singleton
 public class NettyServerService {
@@ -66,6 +67,7 @@ public class NettyServerService {
               //ch.pipeline().addLast(new DiscardServerHandler());
 //              ch.pipeline().addLast(new LoggingHandler('server'));
               ch.pipeline()
+                  .addLast(new LoggingHandler("server"))
                   // outbound
                   .addLast(new ProtobufVarint32LengthFieldPrepender())
                   .addLast(new MessageFrameToFrameOutboundHandler())
