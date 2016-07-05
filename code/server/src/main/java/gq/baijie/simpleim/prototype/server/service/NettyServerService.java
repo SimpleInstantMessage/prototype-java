@@ -46,8 +46,9 @@ public class NettyServerService {
                                                  .setSuccessMessage(frameRequest.getMessage())
                                                  .build()));
           break;
-        case "close":
-          Main.INSTANCE.serviceComponent.getSystemManagerService().stop();
+        case "shutdown":
+          //TODO response
+          Main.INSTANCE.serviceComponent.getSystemManagerService().shutdown();
           break;
         default:
           //TODO error

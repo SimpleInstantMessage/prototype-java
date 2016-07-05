@@ -18,4 +18,8 @@ public class ThreadService {
     return mainExecutorService;
   }
 
+  public void shutdown() {
+    mainExecutorService.shutdown();
+  }
+
 }

@@ -29,8 +29,13 @@ public class SystemManagerService {
   /**
    * Run {@link #getStopTasksList()} in {@link ThreadService#getMainExecutorService()}
    */
-  public void stop() {
+  public void stop() { //TODO return Future?
     threadService.getMainExecutorService().submit(()->stopTasksList.forEach(Runnable::run));
+  }
+
+  public void shutdown() {
+    stop();
+    threadService.shutdown();//TODO return Future
   }
 
   public CopyOnWriteArrayList<Runnable> getStartTaskList() {
