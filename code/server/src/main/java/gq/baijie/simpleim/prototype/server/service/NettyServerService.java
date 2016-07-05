@@ -1,7 +1,5 @@
 package gq.baijie.simpleim.prototype.server.service;
 
-import java.util.function.BiConsumer;
-
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -10,7 +8,7 @@ import gq.baijie.simpleim.prototype.server.Main;
 import gq.baijie.simpleim.prototype.server.io.network.netty.FrameToMessageFrameInboundHandler;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameToFrameOutboundHandler;
-import gq.baijie.simpleim.prototype.server.io.network.netty.business.TransactionManager;
+import gq.baijie.simpleim.prototype.server.io.network.netty.business.ServerRequestHandler;
 import gq.baijie.simpleim.prototype.server.proto.message.Message;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -32,29 +30,22 @@ public class NettyServerService {
   private Channel serverListeningChannel;
 
   @Inject
-  public NettyServerService() {}
+  public NettyServerService() {
+  }
 
   public void start(int port) {
-    BiConsumer<TransactionManager.Transaction, Message.Frame>
-        initRequestHandler = (transactions, frame) -> {
-      final Message.Request frameRequest = frame.getRequest();
-      switch (frameRequest.getFunction()) {//TODO
-        case "echo":
-          transactions.send(frame.toBuilder()
-                                .setTransactionState(Message.TransactionState.LAST)
-                                .setResponse(Message.Response.newBuilder()
-                                                 .setSuccessMessage(frameRequest.getMessage())
-                                                 .build()));
-          break;
-        case "shutdown":
-          //TODO response
-          Main.INSTANCE.serviceComponent.getSystemManagerService().shutdown();
-          break;
-        default:
-          //TODO error
-          break;
-      }
-    };
+    ServerRequestHandler initRequestHandler = new ServerRequestHandler();
+    initRequestHandler.getHandlers().put("echo", (transaction, frame) -> {
+      transaction.send(frame.toBuilder()
+                           .setTransactionState(Message.TransactionState.LAST)
+                           .setResponse(Message.Response.newBuilder()
+                                            .setSuccessMessage(frame.getRequest().getMessage())
+                                            .build()));
+    });
+    initRequestHandler.getHandlers().put("shutdown", (transaction, frame) ->
+        //TODO response
+        Main.INSTANCE.serviceComponent.getSystemManagerService().shutdown()
+    );
 
     EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
     EventLoopGroup workerGroup = new NioEventLoopGroup();
