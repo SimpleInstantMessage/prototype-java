@@ -84,10 +84,8 @@ public class NettyClientService {
   }
 
   private static void sendEchoRequest(@Nonnull MessageFrameInboundHandler2 businessHandler) {
-    final Message.Frame.Builder echoRequest = Message.Frame.newBuilder()
-        .setTransactionState(Message.TransactionState.FIRST)
-        .setRequest(Message.Request.newBuilder().setFunction("echo").build());
-    businessHandler.getTransactionManager().newTransaction().send(echoRequest, frame -> {
+    final Message.Request request = Message.Request.newBuilder().setFunction("echo").build();
+    businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
       System.out.println("received response:");
       System.out.println(frame);
     });
@@ -101,10 +99,8 @@ public class NettyClientService {
 
   private static void sendShutdownServerRequest(
       @Nonnull MessageFrameInboundHandler2 businessHandler) {
-    final Message.Frame.Builder echoRequest = Message.Frame.newBuilder()
-        .setTransactionState(Message.TransactionState.FIRST)
-        .setRequest(Message.Request.newBuilder().setFunction("shutdown").build());
-    businessHandler.getTransactionManager().newTransaction().send(echoRequest, frame -> {
+    final Message.Request request = Message.Request.newBuilder().setFunction("shutdown").build();
+    businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
       System.out.println("received response:");
       System.out.println(frame);
     });
@@ -118,16 +114,14 @@ public class NettyClientService {
 
   public void sendCreateAccountRequest(@Nonnull String accountId, @Nonnull String password) {
     if (businessHandler == null) return;
-    final Message.Frame.Builder echoRequest = Message.Frame.newBuilder()
-        .setTransactionState(Message.TransactionState.FIRST)
-        .setRequest(Message.Request.newBuilder()
-                        .setFunction("create account")
-                        .setMessage(Any.pack(Message.CreateAccountRequestMessage.newBuilder()
-                                                 .setAccountId(accountId)
-                                                 .setPassword(password)
-                                                 .build()))
-                        .build());
-    businessHandler.getTransactionManager().newTransaction().send(echoRequest, frame -> {
+    final Message.Request request = Message.Request.newBuilder()
+        .setFunction("create account")
+        .setMessage(Any.pack(Message.CreateAccountRequestMessage.newBuilder()
+                                 .setAccountId(accountId)
+                                 .setPassword(password)
+                                 .build()))
+        .build();
+    businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
       System.out.println("received response:");
       System.out.println(frame);
     });

@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
@@ -50,7 +51,8 @@ public class TransactionManager {
           //TODO error
           return null;
         } else {
-          final Transaction transaction = new Transaction(frame.getTransactionId());
+          final Transaction transaction =
+              new Transaction(frame.getTransactionId(), TransactionState.HAVE_SENT);
           transaction.setRequestHandler(initRequestHandler);
           transactions.put(frame.getTransactionId(), transaction);
           return transaction;
@@ -81,7 +83,7 @@ public class TransactionManager {
     do {
       id = (int) (Math.random() * Integer.MAX_VALUE);
     } while (transactions.containsKey(id));
-    Transaction transaction = new Transaction(id);
+    Transaction transaction = new Transaction(id, TransactionState.HAVE_NOT_SENT);
     transactions.put(id, transaction);
     return transaction;
   }
@@ -91,12 +93,16 @@ public class TransactionManager {
 
     public final int id;
 
+    @Nonnull
+    private TransactionState transactionState;
+
     BiConsumer<Transaction, Message.Frame> requestHandler;
 
     Queue<Request> pendingRequests = new LinkedList<>();
 
-    public Transaction(int id) {
+    private Transaction(int id, @Nonnull TransactionState state) {
       this.id = id;
+      this.transactionState = state;
     }
 
     public void setRequestHandler(@Nullable BiConsumer<Transaction, Message.Frame> requestHandler) {
@@ -121,26 +127,47 @@ public class TransactionManager {
       }
     }
 
-    public void send(Message.Frame.Builder frameBuilder) {
-      send(frameBuilder, null);
+    private void send0(Message.Frame frame) {
+      TransactionManager.this.send(frame);
+      transactionState = TransactionState.HAVE_SENT;
     }
 
-    public void send(Message.Frame.Builder frameBuilder, Consumer<Message.Frame> responseHandler) {
-      Message.Frame frame = frameBuilder.setTransactionId(id).build();
-      switch (frame.getMessageCase()) {
-        case REQUEST:
-          Request request = new Request(responseHandler);
-          pendingRequests.offer(request);
-          TransactionManager.this.send(frame);
-          break;
-        case RESPONSE:
-          TransactionManager.this.send(frame);
-          break;
-        case MESSAGE_NOT_SET:
-        default:
-          //TODO send error
-          throw new UnsupportedOperationException("unknown message type in frame");
+    public void send(Message.Request request, @Nullable Consumer<Message.Frame> responseHandler) {
+      Message.Frame frame = buildMessageFrame(request, false);
+      pendingRequests.offer(new Request(responseHandler));
+      send0(frame);
+    }
+
+    public void send(Message.Response response) {
+      Message.Frame frame = buildMessageFrame(response, false);
+      send0(frame);
+    }
+
+    public void end(Message.Response response) {
+      Message.Frame frame = buildMessageFrame(response, true);
+      send0(frame);
+    }
+
+    private Message.Frame.Builder newMessageFrameBuilder(boolean isEnd) {
+      final Message.Frame.Builder frameBuilder = Message.Frame.newBuilder();
+      frameBuilder.setTransactionId(id);
+      if (transactionState == TransactionState.HAVE_NOT_SENT) {
+        frameBuilder.setTransactionState(Message.TransactionState.FIRST);//TODO see message.proto
+      } else {
+        if (isEnd) {
+          frameBuilder.setTransactionState(Message.TransactionState.LAST);//TODO see message.proto
+        } else {
+          frameBuilder.setTransactionState(Message.TransactionState.KEEP);
+        }
       }
+      return frameBuilder;
+    }
+
+    private Message.Frame buildMessageFrame(Message.Request request, boolean isEnd) {
+      return newMessageFrameBuilder(isEnd).setRequest(request).build();
+    }
+    private Message.Frame buildMessageFrame(Message.Response response, boolean isEnd) {
+      return newMessageFrameBuilder(isEnd).setResponse(response).build();
     }
 
 
@@ -164,6 +191,11 @@ public class TransactionManager {
       }
     }
 
+  }
+
+  private enum TransactionState {
+    HAVE_NOT_SENT,
+    HAVE_SENT
   }
 
 }

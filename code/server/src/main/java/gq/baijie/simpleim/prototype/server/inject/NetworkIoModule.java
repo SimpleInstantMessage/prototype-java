@@ -19,11 +19,9 @@ public class NetworkIoModule {
       AccountService accountService) {
     final ServerRequestHandler initRequestHandler = new ServerRequestHandler();
     initRequestHandler.getHandlers().put("echo", (transaction, frame) -> {
-      transaction.send(frame.toBuilder()
-                           .setTransactionState(Message.TransactionState.LAST)
-                           .setResponse(Message.Response.newBuilder()
-                                            .setSuccessMessage(frame.getRequest().getMessage())
-                                            .build()));
+      transaction.end(Message.Response.newBuilder()
+                           .setSuccessMessage(frame.getRequest().getMessage())
+                           .build());
     });
     initRequestHandler.getHandlers().put("shutdown", (transaction, frame) ->
         //TODO response
@@ -39,22 +37,18 @@ public class NetworkIoModule {
         if (result == AccountService.RegisterResult.SUCCESS) {
           final Message.CreateAccountSuccessMessage successMessage =
               Message.CreateAccountSuccessMessage.getDefaultInstance();
-          transaction.send(frame.toBuilder()
-                               .setTransactionState(Message.TransactionState.LAST)
-                               .setResponse(Message.Response.newBuilder()
-                                                .setSuccessMessage(Any.pack(successMessage))
-                                                .build()));
+          transaction.end(Message.Response.newBuilder()
+                               .setSuccessMessage(Any.pack(successMessage))
+                               .build());
         } else {
           final Message.CreateAccountFailureMessage failureMessage =
               Message.CreateAccountFailureMessage.newBuilder()
                   .setErrorCode(result.ordinal()) //TODO
                   .setErrorMessage(result.toString()) //TODO
                   .build();
-          transaction.send(frame.toBuilder()
-                               .setTransactionState(Message.TransactionState.LAST)
-                               .setResponse(Message.Response.newBuilder()
-                                                .setFailureCause(Any.pack(failureMessage))
-                                                .build()));
+          transaction.end(Message.Response.newBuilder()
+                               .setFailureCause(Any.pack(failureMessage))
+                               .build());
         }
       } catch (InvalidProtocolBufferException e) {
         e.printStackTrace();//TODO

@@ -6,6 +6,7 @@ option java_package = "gq.baijie.simpleim.prototype.server.proto.message";
 import "google/protobuf/any.proto";
 
 enum TransactionState {
+  //TODO FIRST and LAST(only request message)?
   UNSET = 0;
   FIRST = 1;
   KEEP = 2;
