@@ -4,12 +4,11 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import gq.baijie.simpleim.prototype.server.Main;
+import dagger.Lazy;
 import gq.baijie.simpleim.prototype.server.io.network.netty.FrameToMessageFrameInboundHandler;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.server.io.network.netty.MessageFrameToFrameOutboundHandler;
 import gq.baijie.simpleim.prototype.server.io.network.netty.business.ServerRequestHandler;
-import gq.baijie.simpleim.prototype.server.proto.message.Message;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -26,6 +25,9 @@ import io.netty.handler.logging.LoggingHandler;
 @Singleton
 public class NettyServerService {
 
+  @Inject
+  Lazy<ServerRequestHandler> lazyServerRequestHandlerLazy;
+
   @Nullable
   private Channel serverListeningChannel;
 
@@ -34,19 +36,6 @@ public class NettyServerService {
   }
 
   public void start(int port) {
-    ServerRequestHandler initRequestHandler = new ServerRequestHandler();
-    initRequestHandler.getHandlers().put("echo", (transaction, frame) -> {
-      transaction.send(frame.toBuilder()
-                           .setTransactionState(Message.TransactionState.LAST)
-                           .setResponse(Message.Response.newBuilder()
-                                            .setSuccessMessage(frame.getRequest().getMessage())
-                                            .build()));
-    });
-    initRequestHandler.getHandlers().put("shutdown", (transaction, frame) ->
-        //TODO response
-        Main.INSTANCE.serviceComponent.getSystemManagerService().shutdown()
-    );
-
     EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {
@@ -67,7 +56,7 @@ public class NettyServerService {
                   .addLast(new ProtobufVarint32FrameDecoder())
                   .addLast(new FrameToMessageFrameInboundHandler())
                   // business
-                  .addLast(new MessageFrameInboundHandler2(initRequestHandler));
+                  .addLast(new MessageFrameInboundHandler2(lazyServerRequestHandlerLazy.get()));
             }
           })
           .option(ChannelOption.SO_BACKLOG, 128)          // (5)

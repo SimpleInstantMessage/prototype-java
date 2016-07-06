@@ -11,7 +11,7 @@ import gq.baijie.simpleim.prototype.server.service.SystemManagerService;
 import gq.baijie.simpleim.prototype.server.service.ThreadService;
 
 @Singleton
-@Component
+@Component(modules = NetworkIoModule.class)
 public interface ServiceComponent {
 
   ThreadService getThreadService();
