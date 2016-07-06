@@ -22,14 +22,28 @@ message Frame {
 }
 //TODO
 message Request {
-  string function = 2;
-  google.protobuf.Any message = 3;
+  string function = 1;
+  google.protobuf.Any message = 2;
 }
 
 message Response {
   oneof result {
-    google.protobuf.Any success_message = 2;
+    google.protobuf.Any success_message = 1;
     // when success == false
-    google.protobuf.Any failure_cause = 3;
+    google.protobuf.Any failure_cause = 2;
   }
+}
+
+message CreateAccountRequestMessage {
+  string account_id = 1;
+  string password = 2;
+}
+
+message CreateAccountSuccessMessage {
+
+}
+
+message CreateAccountFailureMessage {
+  uint32 error_code = 1;
+  string error_message = 2;
 }

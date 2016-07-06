@@ -29,8 +29,8 @@ public class Main {
     final NettyClientService nettyClientService = serviceComponent.newNettyClientService();
     nettyClientService.start("localhost", 56789);
     nettyClientService.sendEchoRequest();
-    nettyClientService.sendEchoRequest();
-    nettyClientService.sendEchoRequest();
+    nettyClientService.sendCreateAccountRequest("test", "testpassword");
+    nettyClientService.sendCreateAccountRequest("baijie", "testpassword");
     nettyClientService.sendShutdownServerRequest();
 
   }

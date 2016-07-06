@@ -1,5 +1,7 @@
 package gq.baijie.simpleim.prototype.server.service;
 
+import com.google.protobuf.Any;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -112,6 +114,23 @@ public class NettyClientService {
     if (businessHandler != null) {
       sendShutdownServerRequest(businessHandler);
     }
+  }
+
+  public void sendCreateAccountRequest(@Nonnull String accountId, @Nonnull String password) {
+    if (businessHandler == null) return;
+    final Message.Frame.Builder echoRequest = Message.Frame.newBuilder()
+        .setTransactionState(Message.TransactionState.FIRST)
+        .setRequest(Message.Request.newBuilder()
+                        .setFunction("create account")
+                        .setMessage(Any.pack(Message.CreateAccountRequestMessage.newBuilder()
+                                                 .setAccountId(accountId)
+                                                 .setPassword(password)
+                                                 .build()))
+                        .build());
+    businessHandler.getTransactionManager().newTransaction().send(echoRequest, frame -> {
+      System.out.println("received response:");
+      System.out.println(frame);
+    });
   }
 
 }
