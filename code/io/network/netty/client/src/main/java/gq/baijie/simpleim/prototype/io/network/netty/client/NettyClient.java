@@ -1,12 +1,10 @@
-package gq.baijie.simpleim.prototype.io.network.netty.client.service;
+package gq.baijie.simpleim.prototype.io.network.netty.client;
 
-import com.google.protobuf.Any;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import gq.baijie.simpleim.prototype.io.network.api.message.Message;
+import gq.baijie.simpleim.prototype.io.network.api.Client;
+import gq.baijie.simpleim.prototype.io.network.netty.client.inject.ClientScope;
 import gq.baijie.simpleim.prototype.io.network.netty.common.handler.FrameToMessageFrameInboundHandler;
 import gq.baijie.simpleim.prototype.io.network.netty.common.handler.MessageFrameInboundHandler2;
 import gq.baijie.simpleim.prototype.io.network.netty.common.handler.MessageFrameToFrameOutboundHandler;
@@ -22,22 +20,25 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.logging.LoggingHandler;
 
-public class NettyClientService {
-
-  @Nullable
-  private MessageFrameInboundHandler2 businessHandler;
+@ClientScope
+public class NettyClient implements Client {
 
   @Inject
-  public NettyClientService() {
+  @Named("services")
+  Object[] services;
+
+  @Inject
+  MessageFrameInboundHandler2 businessHandler;
+
+  @Inject
+  public NettyClient() {
   }
 
-  public void start(String host, int port) {
+  @Override
+  public void connect(String host, int port) { //TODO avoid called twice
     EventLoopGroup workerGroup = new NioEventLoopGroup();
 
     try {
-
-      businessHandler = new MessageFrameInboundHandler2();
-
       Bootstrap b = new Bootstrap(); // (1)
       b.group(workerGroup); // (2)
       b.channel(NioSocketChannel.class); // (3)
@@ -77,54 +78,22 @@ public class NettyClientService {
     }
   }
 
-  public void stop() {
+  @Override
+  public void disconnect() {
     if (businessHandler != null) {
       businessHandler.close();
     }
   }
 
-  private static void sendEchoRequest(@Nonnull MessageFrameInboundHandler2 businessHandler) {
-    final Message.Request request = Message.Request.newBuilder().setFunction("echo").build();
-    businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
-      System.out.printf("[%s]received response:%n", Thread.currentThread());
-      System.out.println(frame);
-    });
-  }
-
-  public void sendEchoRequest() {
-    if (businessHandler != null) {
-      sendEchoRequest(businessHandler);
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T getService(Class<T> clazz) {
+    for (Object service : services) {
+      if (clazz.isInstance(service)) {
+        return (T) service;
+      }
     }
-  }
-
-  private static void sendShutdownServerRequest(
-      @Nonnull MessageFrameInboundHandler2 businessHandler) {
-    final Message.Request request = Message.Request.newBuilder().setFunction("shutdown").build();
-    businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
-      System.out.printf("[%s]received response:%n", Thread.currentThread());
-      System.out.println(frame);
-    });
-  }
-
-  public void sendShutdownServerRequest() {
-    if (businessHandler != null) {
-      sendShutdownServerRequest(businessHandler);
-    }
-  }
-
-  public void sendCreateAccountRequest(@Nonnull String accountId, @Nonnull String password) {
-    if (businessHandler == null) return;
-    final Message.Request request = Message.Request.newBuilder()
-        .setFunction("create account")
-        .setMessage(Any.pack(Message.CreateAccountRequestMessage.newBuilder()
-                                 .setAccountId(accountId)
-                                 .setPassword(password)
-                                 .build()))
-        .build();
-    businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
-      System.out.printf("[%s]received response:%n", Thread.currentThread());
-      System.out.println(frame);
-    });
+    return null;
   }
 
 }

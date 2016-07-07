@@ -1,10 +1,16 @@
 package gq.baijie.simpleim.prototype.io.network.netty.integration.testing;
 
+import gq.baijie.simpleim.prototype.business.api.AccountService;
+import gq.baijie.simpleim.prototype.business.api.Result;
+import gq.baijie.simpleim.prototype.io.network.api.Client;
 import gq.baijie.simpleim.prototype.io.network.api.Server;
-import gq.baijie.simpleim.prototype.io.network.netty.client.service.NettyClientService;
+import gq.baijie.simpleim.prototype.io.network.api.service.EchoService;
+import gq.baijie.simpleim.prototype.io.network.api.service.ServerManageService;
+import gq.baijie.simpleim.prototype.io.network.netty.client.inject.ClientComponent;
 import gq.baijie.simpleim.prototype.io.network.netty.integration.testing.inject.DaggerServiceComponent;
 import gq.baijie.simpleim.prototype.io.network.netty.integration.testing.inject.ServiceComponent;
 import gq.baijie.simpleim.prototype.io.network.netty.server.service.SystemManagerService;
+import rx.functions.Action1;
 
 public class Main {
 
@@ -26,12 +32,37 @@ public class Main {
 
     systemManagerService.start();
 
-    final NettyClientService nettyClientService = serviceComponent.newNettyClientService();
-    nettyClientService.start("localhost", 56789);
-    nettyClientService.sendEchoRequest();
-    nettyClientService.sendCreateAccountRequest("test", "testpassword");
-    nettyClientService.sendCreateAccountRequest("baijie", "testpassword");
-    nettyClientService.sendShutdownServerRequest();
+    final ClientComponent clientComponent = serviceComponent.newClientComponent();
+    final Client client = clientComponent.getClient();
+    client.connect("localhost", 56789);
+
+    client.getService(EchoService.class)
+        .echo("test echo".getBytes()).subscribe(result -> {
+      if (result.succeeded()) {
+        System.out.println("echo succeeded response:");
+        System.out.println(new String(result.result()));
+      } else {
+        System.err.println(result.error());
+      }
+    });
+
+    final Action1<Result<Void, AccountService.CreateError>> createHandler = result -> {
+      if (result.succeeded()) {
+        System.out.println("create Account succeeded");
+      } else {
+        System.err.println(result.error());
+      }
+    };
+    client.getService(AccountService.class).create("test", "testpassword").subscribe(createHandler);
+    client.getService(AccountService.class).create("baijie", "testpassword").subscribe(createHandler);
+
+    client.getService(ServerManageService.class).shutdown().subscribe(result -> {
+      if (result.succeeded()) {
+        System.out.println("shutdown server succeeded");
+      } else {
+        System.err.println(result.error());
+      }
+    });
 
   }
 

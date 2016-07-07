@@ -35,6 +35,10 @@ message Response {
   }
 }
 
+message EchoMessage {
+  bytes value = 1;
+}
+
 message CreateAccountRequestMessage {
   string account_id = 1;
   string password = 2;

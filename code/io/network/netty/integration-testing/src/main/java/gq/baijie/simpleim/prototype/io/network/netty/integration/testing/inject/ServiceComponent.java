@@ -4,7 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import gq.baijie.simpleim.prototype.io.network.api.Server;
-import gq.baijie.simpleim.prototype.io.network.netty.client.service.NettyClientService;
+import gq.baijie.simpleim.prototype.io.network.netty.client.inject.ClientComponent;
 import gq.baijie.simpleim.prototype.io.network.netty.server.inject.NetworkIoModule;
 import gq.baijie.simpleim.prototype.io.network.netty.server.service.AccountService;
 import gq.baijie.simpleim.prototype.io.network.netty.server.service.SessionService;
@@ -21,7 +21,7 @@ public interface ServiceComponent {
 
   Server newServer();
 
-  NettyClientService newNettyClientService();
+  ClientComponent newClientComponent();
 
   SessionService getSessionService();
 
