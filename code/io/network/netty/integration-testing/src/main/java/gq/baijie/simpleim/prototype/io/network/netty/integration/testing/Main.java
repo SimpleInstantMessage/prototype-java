@@ -1,9 +1,9 @@
 package gq.baijie.simpleim.prototype.io.network.netty.integration.testing;
 
+import gq.baijie.simpleim.prototype.io.network.api.Server;
 import gq.baijie.simpleim.prototype.io.network.netty.client.service.NettyClientService;
 import gq.baijie.simpleim.prototype.io.network.netty.integration.testing.inject.DaggerServiceComponent;
 import gq.baijie.simpleim.prototype.io.network.netty.integration.testing.inject.ServiceComponent;
-import gq.baijie.simpleim.prototype.io.network.netty.server.service.NettyServerService;
 import gq.baijie.simpleim.prototype.io.network.netty.server.service.SystemManagerService;
 
 public class Main {
@@ -20,9 +20,9 @@ public class Main {
 
     final ServiceComponent serviceComponent = INSTANCE.serviceComponent;
     final SystemManagerService systemManagerService = serviceComponent.getSystemManagerService();
-    final NettyServerService nettyServerService = serviceComponent.newNettyServerService();
-    systemManagerService.getStartTaskList().add(() -> nettyServerService.start(56789));
-    systemManagerService.getStopTasksList().add(nettyServerService::stop);
+    final Server server = serviceComponent.newServer();
+    systemManagerService.getStartTaskList().add(() -> server.listen(56789));
+    systemManagerService.getStopTasksList().add(server::stop);
 
     systemManagerService.start();
 

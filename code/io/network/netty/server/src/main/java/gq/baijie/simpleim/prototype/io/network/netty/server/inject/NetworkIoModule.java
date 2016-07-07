@@ -5,13 +5,20 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import dagger.Module;
 import dagger.Provides;
+import gq.baijie.simpleim.prototype.io.network.api.Server;
 import gq.baijie.simpleim.prototype.io.network.api.message.Message;
 import gq.baijie.simpleim.prototype.io.network.netty.common.business.ServerRequestHandler;
+import gq.baijie.simpleim.prototype.io.network.netty.server.NettyServer;
 import gq.baijie.simpleim.prototype.io.network.netty.server.service.AccountService;
 import gq.baijie.simpleim.prototype.io.network.netty.server.service.SystemManagerService;
 
 @Module
 public class NetworkIoModule {
+
+  @Provides
+  Server provideServer(NettyServer nettyServer) {
+    return nettyServer;
+  }
 
   @Provides
   ServerRequestHandler provideServerRequestHandler(

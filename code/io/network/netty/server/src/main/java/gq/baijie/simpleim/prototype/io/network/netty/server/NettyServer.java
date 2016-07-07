@@ -1,9 +1,10 @@
-package gq.baijie.simpleim.prototype.io.network.netty.server.service;
+package gq.baijie.simpleim.prototype.io.network.netty.server;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import gq.baijie.simpleim.prototype.io.network.api.Server;
 import gq.baijie.simpleim.prototype.io.network.netty.common.business.ServerRequestHandler;
 import gq.baijie.simpleim.prototype.io.network.netty.common.handler.FrameToMessageFrameInboundHandler;
 import gq.baijie.simpleim.prototype.io.network.netty.common.handler.MessageFrameInboundHandler2;
@@ -21,7 +22,7 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.logging.LoggingHandler;
 
-public class NettyServerService {
+public class NettyServer implements Server {
 
   @Inject
   Lazy<ServerRequestHandler> lazyServerRequestHandlerLazy;
@@ -30,10 +31,11 @@ public class NettyServerService {
   private Channel serverListeningChannel;
 
   @Inject
-  public NettyServerService() {
+  public NettyServer() {
   }
 
-  public void start(int port) { //TODO avoid start twice
+  @Override
+  public void listen(int port) { //TODO avoid start twice
     EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {
@@ -80,6 +82,7 @@ public class NettyServerService {
     }
   }
 
+  @Override
   public void stop() {
     if (serverListeningChannel != null) {
       serverListeningChannel.close().syncUninterruptibly();
