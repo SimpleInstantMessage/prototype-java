@@ -1,6 +1,5 @@
 package gq.baijie.simpleim.prototype.io.network.netty.common.handler;
 
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
@@ -11,13 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 
-public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter /*implements Port*/ {
-
-  private static AtomicLong counter = new AtomicLong();
-
-  private final long id = counter.incrementAndGet();
-
-  private final String address = "client:$id";
+public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter {
 
   private final TransactionManager transactionManager;
 
@@ -51,24 +44,10 @@ public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter /*
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
     Message.Frame frame = (Message.Frame) msg;
     transactionManager.onReceive(frame);//TODO thread
-//    def message = msg as MessageFrameOuterClass.MessageFrame;
-//    Routers.defaultRouter.send(address, "service:${message.serviceId}", message.sessionId, message.message);
-
-//    println message
-
-    /*new Thread(){
-      @Override
-      void run() {
-        sleep(2000);
-        ctx.executor().submit{close(ctx)};;
-      }
-    }.start();*/
-
   }
 
   private static void close(ChannelHandlerContext ctx) {
     ctx.close();
-//    ctx.channel().parent().close();
   }
 
   //TODO return Future object
@@ -83,23 +62,7 @@ public class MessageFrameInboundHandler2 extends ChannelInboundHandlerAdapter /*
       return;
       //TODO
     }
-    ctx.executor().submit(()-> ctx.writeAndFlush(frame));
+    ctx.executor().submit(() -> ctx.writeAndFlush(frame));
   }
-
-  /*@Override
-  void onReceive(Message businessMessage) {
-    ctx?.executor()?.submit{
-      def message = MessageFrameOuterClass.MessageFrame.newBuilder()
-          .setServiceId(toServiceId(businessMessage.sender))
-          .setSessionId(businessMessage.sessionId)
-          .setMessage(businessMessage.message as Any)
-          .build()
-      ctx?.writeAndFlush(message)
-    }
-  }*/
-
-  /*private static String toServiceId(String serviceAddress) {
-    serviceAddress.replace('service:', '');
-  }*/
 
 }

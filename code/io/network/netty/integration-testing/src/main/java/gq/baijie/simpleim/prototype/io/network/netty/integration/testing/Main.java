@@ -35,8 +35,4 @@ public class Main {
 
   }
 
-  private static void println(Object o) {
-    System.out.println(o);
-  }
-
 }
