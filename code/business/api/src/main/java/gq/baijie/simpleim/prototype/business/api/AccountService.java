@@ -2,13 +2,15 @@ package gq.baijie.simpleim.prototype.business.api;
 
 import javax.annotation.Nonnull;
 
+import rx.Observable;
+
 public interface AccountService {
 
-  Result<Void, CreateError> create(@Nonnull String accountId, @Nonnull String password);
+  Observable<Result<Void, CreateError>> create(@Nonnull String accountId, @Nonnull String password);
 
-  Result<Void, LoginError> login(@Nonnull String accountId, @Nonnull String password);
+  Observable<Result<Void, LoginError>> login(@Nonnull String accountId, @Nonnull String password);
 
-  Result<Void, LogoutError> logout();
+  Observable<Result<Void, LogoutError>> logout();
 
   enum CreateError {
     DUPLICATED_ACCOUNT_ID
