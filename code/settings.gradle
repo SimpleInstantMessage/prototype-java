@@ -15,6 +15,7 @@ include 'shared'
 include 'api'
 include 'services:webservice'
 */
+include 'business:api'
 include 'server'
 include 'client-javafx'
 

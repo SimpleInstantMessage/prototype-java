@@ -13,7 +13,7 @@ dependencies {
 
   compile "com.google.dagger:dagger:$daggerVersion"
   compileOnly "com.google.dagger:dagger-compiler:$daggerVersion"
-  compile 'io.reactivex:rxjava:1.1.6'
+  compile "io.reactivex:rxjava:$rxjavaVersion"
   compile 'io.netty:netty-codec:4.1.1.Final'
   // io.netty.handler.logging in netty-handler
   compile 'io.netty:netty-handler:4.1.1.Final'
