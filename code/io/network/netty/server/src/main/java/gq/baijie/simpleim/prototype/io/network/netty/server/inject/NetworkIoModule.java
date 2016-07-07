@@ -30,10 +30,13 @@ public class NetworkIoModule {
 
     initRequestHandler.getHandlers().put("create account", (transaction, frame) -> {
       try {
+        // input
         final Message.CreateAccountRequestMessage request =
             frame.getRequest().getMessage().unpack(Message.CreateAccountRequestMessage.class);
+        // business
         final AccountService.RegisterResult result =
             accountService.register(request.getAccountId(), request.getPassword());
+        // output
         if (result == AccountService.RegisterResult.SUCCESS) {
           final Message.CreateAccountSuccessMessage successMessage =
               Message.CreateAccountSuccessMessage.getDefaultInstance();
