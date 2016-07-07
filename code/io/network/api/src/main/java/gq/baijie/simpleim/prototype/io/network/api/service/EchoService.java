@@ -5,6 +5,6 @@ import rx.Observable;
 
 public interface EchoService {
 
-  Observable<Result<Void, byte[]>> echo(byte[] bytes);
+  Observable<Result<byte[], Void>> echo(byte[] bytes);
 
 }

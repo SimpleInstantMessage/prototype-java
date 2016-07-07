@@ -6,11 +6,11 @@ public class Result<T, E> {
 
   private final E error;
 
-  public static <T> Result<T, ?> succeed(T result) {
+  public static <T, E> Result<T, E> succeed(T result) {
     return new Result<>(result, null);
   }
 
-  public static <E> Result<?, E> error(E error) {
+  public static <T, E> Result<T, E> error(E error) {
     return new Result<>(null, error);
   }
 
