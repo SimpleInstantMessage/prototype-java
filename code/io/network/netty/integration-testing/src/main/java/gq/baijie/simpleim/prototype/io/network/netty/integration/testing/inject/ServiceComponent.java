@@ -19,7 +19,7 @@ public interface ServiceComponent {
 
   SystemManagerService getSystemManagerService();
 
-  NettyServerService getNettyServerService();
+  NettyServerService newNettyServerService();
 
   NettyClientService newNettyClientService();
 

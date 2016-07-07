@@ -2,7 +2,6 @@ package gq.baijie.simpleim.prototype.io.network.netty.server.service;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import dagger.Lazy;
 import gq.baijie.simpleim.prototype.io.network.netty.common.business.ServerRequestHandler;
@@ -22,7 +21,6 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.logging.LoggingHandler;
 
-@Singleton
 public class NettyServerService {
 
   @Inject
@@ -35,7 +33,7 @@ public class NettyServerService {
   public NettyServerService() {
   }
 
-  public void start(int port) {
+  public void start(int port) { //TODO avoid start twice
     EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {

@@ -20,7 +20,7 @@ public class Main {
 
     final ServiceComponent serviceComponent = INSTANCE.serviceComponent;
     final SystemManagerService systemManagerService = serviceComponent.getSystemManagerService();
-    final NettyServerService nettyServerService = serviceComponent.getNettyServerService();
+    final NettyServerService nettyServerService = serviceComponent.newNettyServerService();
     systemManagerService.getStartTaskList().add(() -> nettyServerService.start(56789));
     systemManagerService.getStopTasksList().add(nettyServerService::stop);
 
