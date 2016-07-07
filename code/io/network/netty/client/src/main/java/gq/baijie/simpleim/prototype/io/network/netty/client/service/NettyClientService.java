@@ -86,7 +86,7 @@ public class NettyClientService {
   private static void sendEchoRequest(@Nonnull MessageFrameInboundHandler2 businessHandler) {
     final Message.Request request = Message.Request.newBuilder().setFunction("echo").build();
     businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
-      System.out.println("received response:");
+      System.out.printf("[%s]received response:%n", Thread.currentThread());
       System.out.println(frame);
     });
   }
@@ -101,7 +101,7 @@ public class NettyClientService {
       @Nonnull MessageFrameInboundHandler2 businessHandler) {
     final Message.Request request = Message.Request.newBuilder().setFunction("shutdown").build();
     businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
-      System.out.println("received response:");
+      System.out.printf("[%s]received response:%n", Thread.currentThread());
       System.out.println(frame);
     });
   }
@@ -122,7 +122,7 @@ public class NettyClientService {
                                  .build()))
         .build();
     businessHandler.getTransactionManager().newTransaction().send(request, frame -> {
-      System.out.println("received response:");
+      System.out.printf("[%s]received response:%n", Thread.currentThread());
       System.out.println(frame);
     });
   }
