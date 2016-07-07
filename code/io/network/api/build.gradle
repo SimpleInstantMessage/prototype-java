@@ -10,7 +10,11 @@ group = "${group}.io.network.api"
 def protobufVersion = '3.0.0-beta-3'
 
 dependencies {
+
+  compile project(':business:api')
+
   compile "com.google.protobuf:protobuf-java:$protobufVersion"
+
 }
 
 protobuf {
