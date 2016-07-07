@@ -1,0 +1,14 @@
+plugins {
+  id "application"
+}
+
+group = "${group}.io.network.netty.integration.testing"
+
+mainClassName = "${group}.Main"
+
+dependencies {
+
+  compile project(':io:network:netty:server')
+  compile project(':io:network:netty:client')
+
+}

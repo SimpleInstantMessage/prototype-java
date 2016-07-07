@@ -1,0 +1,8 @@
+
+group = "${group}.io.network.netty.server"
+
+dependencies {
+
+  compile project(':io:network:netty:common')
+
+}

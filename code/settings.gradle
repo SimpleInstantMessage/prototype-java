@@ -16,7 +16,11 @@ include 'api'
 include 'services:webservice'
 */
 include 'business:api'
-include 'server'
+include 'io:network:api'
+include 'io:network:netty:common'
+include 'io:network:netty:server'
+include 'io:network:netty:client'
+include 'io:network:netty:integration-testing'
 include 'client-javafx'
 
 rootProject.name = 'prototype'

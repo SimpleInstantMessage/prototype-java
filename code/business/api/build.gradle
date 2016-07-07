@@ -1,6 +1,2 @@
 
 group = "${group}.business.api"
-
-dependencies {
-  compile "io.reactivex:rxjava:$rxjavaVersion"
-}

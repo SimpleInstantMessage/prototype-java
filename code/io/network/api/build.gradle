@@ -1,0 +1,32 @@
+plugins {
+  id "com.google.protobuf" version "0.7.7"
+  id "idea"
+}
+
+group = "${group}.io.network.api"
+
+// ---- Protocol Buffers Start ----
+
+def protobufVersion = '3.0.0-beta-3'
+
+dependencies {
+  compile "com.google.protobuf:protobuf-java:$protobufVersion"
+}
+
+protobuf {
+
+  // Configure the protoc executable
+  protoc {
+    // Download from repositories
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+
+}
+
+idea {
+  module {
+    sourceDirs += file("${protobuf.generatedFilesBaseDir}/main/java");
+  }
+}
+
+// ---- Protocol Buffers End ----
