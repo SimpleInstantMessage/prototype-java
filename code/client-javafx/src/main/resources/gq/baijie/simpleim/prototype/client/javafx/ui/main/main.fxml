@@ -15,7 +15,7 @@
             <children>
             <VBox prefHeight="50.0" prefWidth="200.0">
                <children>
-                  <Label text="current user id here" />
+                  <Label fx:id="accountId" text="current user id here" />
                       <Button mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
                </children>
             </VBox>

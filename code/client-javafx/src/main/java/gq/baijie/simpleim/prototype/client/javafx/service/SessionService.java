@@ -26,6 +26,10 @@ public class SessionService {
     return state;
   }
 
+  public String getAccountId() {
+    return accountId;
+  }
+
   public Observable<ChangeEvent<State>> getStateChangeEvents() {
     return stateChangeEvents.asObservable();
   }
