@@ -1,6 +1,7 @@
 package gq.baijie.simpleim.prototype.client.javafx.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -22,7 +23,7 @@ public class ChatService {
     return newMessageEventBus.asObservable();
   }
 
-  Message sendMessage(String senderId, String message, List<String> receiverIds) {
+  Message sendMessage(String senderId, String message, Set<String> receiverIds) {
     final List<Message.Receiver> receivers = receiverIds.stream()
         .map(Message.Receiver::new)
         .collect(Collectors.toList());
@@ -49,6 +50,10 @@ public class ChatService {
 
     public List<Receiver> getReceivers() {
       return receivers;
+    }
+
+    public String getMessage() {
+      return message;
     }
 
     public static class Receiver {

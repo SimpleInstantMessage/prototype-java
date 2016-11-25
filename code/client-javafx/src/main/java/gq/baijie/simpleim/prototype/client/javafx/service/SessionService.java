@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -79,7 +80,7 @@ public class SessionService {
     return state == State.LOGGED_IN;
   }
 
-  public ChatService.Message sendMessage(String message, List<String> receiverIds) {
+  public ChatService.Message sendMessage(String message, Set<String> receiverIds) {
     final String accountId = getAccountId();
     if (accountId != null) {
       return chatService.sendMessage(accountId, message, receiverIds);

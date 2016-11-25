@@ -13,6 +13,8 @@ import javax.annotation.Nullable;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class ConversationService {
 
@@ -36,7 +38,7 @@ public class ConversationService {
         .map(ChatService.Message.Receiver::getReceiverId)
         .collect(Collectors.toSet());
     Conversation conversation = touchConversation(participantIds);
-    conversation.getMessages().add(message);
+    conversation.addMessage(message);
   }
 
   private Conversation addNewConversation(@Nonnull Set<String> participantIds) {
@@ -61,6 +63,7 @@ public class ConversationService {
     final Set<String> participantIds;
     //TODO memory guard
     final List<ChatService.Message> messages = new LinkedList<>();
+    final PublishSubject<ChatService.Message> addNewMessageEvents = PublishSubject.create();
 
     public Conversation(@Nonnull Set<String> participantIds) {
       this.participantIds = Collections.unmodifiableSet(participantIds);
@@ -75,8 +78,17 @@ public class ConversationService {
       return participantIds;
     }
 
+    public void addMessage(ChatService.Message message) {
+      messages.add(message);
+      addNewMessageEvents.onNext(message);
+    }
+
     public List<ChatService.Message> getMessages() {
-      return messages;
+      return Collections.unmodifiableList(messages);
+    }
+
+    public Observable<ChatService.Message> getAddNewMessageEvents() {
+      return addNewMessageEvents.asObservable();
     }
 
     @Override

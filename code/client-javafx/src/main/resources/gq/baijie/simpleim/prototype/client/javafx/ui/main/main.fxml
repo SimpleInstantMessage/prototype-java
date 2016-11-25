@@ -24,11 +24,11 @@
         </VBox>
       <SplitPane dividerPositions="0.75" orientation="VERTICAL" prefHeight="400.0" prefWidth="400.0">
         <items>
-            <TextArea editable="false" />
+            <TextArea fx:id="conversationLog" editable="false" />
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <TextArea AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <Button mnemonicParsing="false" text="Send" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="8.0" />
+                  <TextArea fx:id="inputMessage" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Button mnemonicParsing="false" onAction="#handleSendMessage" text="Send" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="8.0" />
                </children></AnchorPane>
         </items>
       </SplitPane>
