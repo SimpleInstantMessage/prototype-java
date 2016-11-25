@@ -5,6 +5,7 @@ import gq.baijie.simpleim.prototype.client.javafx.service.AccountService;
 import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 
 public class Controller {
 
@@ -13,6 +14,8 @@ public class Controller {
 
   @FXML
   private Label accountId;
+  @FXML
+  private ListView<String> onlineUserList;
 
   public Controller() {
     accountService = Main.INSTANCE.serviceComponent.getAccountService();
@@ -22,6 +25,7 @@ public class Controller {
   @FXML
   private void initialize() {
     accountId.setText(sessionService.getAccountId());
+    onlineUserList.getItems().setAll(accountService.onlineUsers());
   }
 
   @FXML

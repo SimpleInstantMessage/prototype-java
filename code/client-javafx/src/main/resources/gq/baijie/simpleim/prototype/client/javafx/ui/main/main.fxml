@@ -19,7 +19,7 @@
                       <Button mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
                </children>
             </VBox>
-            <ListView prefHeight="350.0" prefWidth="200.0" />
+            <ListView fx:id="onlineUserList" prefHeight="350.0" prefWidth="200.0" />
             </children>
         </VBox>
       <SplitPane dividerPositions="0.75" orientation="VERTICAL" prefHeight="400.0" prefWidth="400.0">

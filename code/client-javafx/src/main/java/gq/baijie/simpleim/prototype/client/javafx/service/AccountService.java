@@ -1,5 +1,8 @@
 package gq.baijie.simpleim.prototype.client.javafx.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,6 +44,13 @@ public class AccountService {
 
   public void logout() {
     sessionService.gotoHaveLoggedOutState();
+  }
+
+  /**
+   * get list of account id who are online now
+   */
+  public List<String> onlineUsers() {
+    return Arrays.asList("baijie", "admin");
   }
 
   public enum RegisterResult {
