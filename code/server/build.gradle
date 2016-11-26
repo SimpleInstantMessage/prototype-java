@@ -8,6 +8,7 @@ mainClassName = "${group}.Main"
 dependencies {
     compile project(':business:api')
     compile project(':server:api')
+    compile project(':server:impl:vertx')
 
     def daggerVersion = '2.5'
 

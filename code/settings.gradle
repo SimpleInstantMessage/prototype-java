@@ -22,6 +22,7 @@ include 'io:network:netty:server'
 include 'io:network:netty:client'
 include 'io:network:netty:integration-testing'
 include 'server:api'
+include 'server:impl:vertx'
 include 'server'
 include 'client-javafx'
 

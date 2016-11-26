@@ -11,7 +11,7 @@ public interface Server {
   Observable<NewConnectEvent> connects();
 
   interface NewConnectEvent {
-    Observable<Object> handles();
+    Observable<Object> handles();//TODO fire new handle multiple times?
   }
 
 }
