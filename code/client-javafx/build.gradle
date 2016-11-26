@@ -7,6 +7,7 @@ mainClassName = "${group}.Main"
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile project(':business:api')
+    compile project(':server:impl:vertx')//TODO need improve
 
     def daggerVersion = '2.5'
 

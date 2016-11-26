@@ -14,10 +14,12 @@ import rx.Observable;
 @Singleton
 public class ChatService {
 
+  private final MessageSwitchService messageSwitchService;
   private final MessageSwitchService.Session messageSwitchSession;
 
   @Inject
   public ChatService(MessageSwitchService messageSwitchService) {
+    this.messageSwitchService = messageSwitchService;
     messageSwitchSession = messageSwitchService.connect();
   }
 
