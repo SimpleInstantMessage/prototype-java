@@ -3,8 +3,9 @@ package gq.baijie.simpleim.prototype.client.javafx.ui.main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import gq.baijie.simpleim.prototype.business.api.Message;
 import gq.baijie.simpleim.prototype.client.javafx.Main;
@@ -17,6 +18,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import rx.Subscription;
+
+import static java.util.stream.Collectors.toSet;
 
 public class Controller {
 
@@ -52,11 +55,12 @@ public class Controller {
 
   @FXML
   private void initialize() {
-    accountId.setText(sessionService.getAccountId());
+    final String currentAccount = sessionService.getAccountId();
+    this.accountId.setText(currentAccount);
     //TODO add onlineUserList
 //    onlineUserList.getItems().setAll(accountService.onlineUsers());
     accountService.onlineUsers().forEach(
-        u -> conversationService.touchConversation(Collections.singleton(u)));
+        u -> conversationService.touchConversation(Stream.of(currentAccount, u).collect(toSet())));
     conversationListView.setCellFactory(listView -> new ConversationCell());
     conversationListView.setItems(conversationService.getConversations());
     conversationListView.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
@@ -106,7 +110,18 @@ public class Controller {
       logger.error("send message when no currentConversation", new IllegalStateException());
       return;
     }
-    sessionService.sendMessage(inputMessage.getText(), currentConversation.getParticipantIds());
+
+    final Set<String> receiverIds;
+    final String currentAccount = sessionService.getAccountId();
+    final Set<String> currentAccountGroup = Stream.of(currentAccount).collect(toSet());
+    if (currentAccountGroup.equals(currentConversation.getParticipantIds())) {
+      receiverIds = currentAccountGroup;
+    } else {
+      receiverIds = currentConversation.getParticipantIds().stream()
+          .filter(u -> !currentAccount.equals(u))
+          .collect(toSet());
+    }
+    sessionService.sendMessage(inputMessage.getText(), receiverIds);
   }
 
   private static class ConversationCell extends ListCell<ConversationService.Conversation> {

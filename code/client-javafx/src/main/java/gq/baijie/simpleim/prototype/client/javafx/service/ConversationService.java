@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import rx.Observable;
 import rx.subjects.PublishSubject;
+
+import static java.util.stream.Stream.concat;
 
 public class ConversationService {
 
@@ -27,16 +30,17 @@ public class ConversationService {
   }
 
   @Nullable
-  Conversation findConversation(@Nonnull Set<String> participantIds) {
+  private Conversation findConversation(@Nonnull Set<String> participantIds) {
     return conversations.stream()
         .filter(c -> c.participantIds.equals(participantIds))
         .findAny().orElse(null);
   }
 
   void logNewMessage(Message message) {
-    final Set<String> participantIds = message.getReceivers().stream()
-        .map(Message.Receiver::getReceiverId)
-        .collect(Collectors.toSet());
+    final Set<String> participantIds =
+        concat(Stream.of(message.getSenderId()),
+               message.getReceivers().stream().map(Message.Receiver::getReceiverId))
+            .collect(Collectors.toSet());
     Conversation conversation = touchConversation(participantIds);
     conversation.addMessage(message);
   }
