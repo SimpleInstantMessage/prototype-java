@@ -8,19 +8,19 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
 
 @Singleton
 public class ChatService {
 
-  private final PublishSubject<Message> newMessageEventBus = PublishSubject.create();
+  private final MessageSwitchService.Session messageSwitchSession;
 
   @Inject
-  public ChatService() {
+  public ChatService(MessageSwitchService messageSwitchService) {
+    messageSwitchSession = messageSwitchService.connect();
   }
 
   Observable<Message> newMessageEventBus() {
-    return newMessageEventBus.asObservable();
+    return messageSwitchSession.receiveMessages();
   }
 
   Message sendMessage(String senderId, String message, Set<String> receiverIds) {
@@ -28,7 +28,7 @@ public class ChatService {
         .map(Message.Receiver::new)
         .collect(Collectors.toList());
     final Message newMessage = new Message(senderId, receivers, message);
-    newMessageEventBus.onNext(newMessage);
+    messageSwitchSession.sendMessage(newMessage);
     return newMessage;
   }
 
