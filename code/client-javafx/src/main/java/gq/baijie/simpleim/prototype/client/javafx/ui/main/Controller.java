@@ -32,7 +32,7 @@ public class Controller {
   @FXML
   private Label accountId;
   @FXML
-  private ListView<ConversationService.Conversation> onlineUserList;
+  private ListView<ConversationService.Conversation> conversationListView;
   @FXML
   private TextArea conversationLog;
   @FXML
@@ -53,12 +53,13 @@ public class Controller {
   @FXML
   private void initialize() {
     accountId.setText(sessionService.getAccountId());
+    //TODO add onlineUserList
 //    onlineUserList.getItems().setAll(accountService.onlineUsers());
     accountService.onlineUsers().forEach(
         u -> conversationService.touchConversation(Collections.singleton(u)));
-    onlineUserList.setCellFactory(listView -> new ConversationCell());
-    onlineUserList.setItems(conversationService.getConversations());
-    onlineUserList.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
+    conversationListView.setCellFactory(listView -> new ConversationCell());
+    conversationListView.setItems(conversationService.getConversations());
+    conversationListView.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
       currentConversation = newV;
       bindConversation(newV);
     });
