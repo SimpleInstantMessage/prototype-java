@@ -69,11 +69,6 @@ public class ConversationService {
       this.participantIds = Collections.unmodifiableSet(participantIds);
     }
 
-    public Conversation(String... participantIds) {
-      this(Arrays.stream(participantIds).collect(Collectors.toSet()));
-    }
-
-
     public Set<String> getParticipantIds() {
       return participantIds;
     }

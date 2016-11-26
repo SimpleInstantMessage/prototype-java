@@ -3,7 +3,6 @@ package gq.baijie.simpleim.prototype.client.javafx.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
