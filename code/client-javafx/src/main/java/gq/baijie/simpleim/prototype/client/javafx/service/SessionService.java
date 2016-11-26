@@ -10,6 +10,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import gq.baijie.simpleim.prototype.business.api.Message;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -26,7 +27,7 @@ public class SessionService {
   private PublishSubject<ChangeEvent<State>> stateChangeEvents = PublishSubject.create();
   /* when state == LOGGED_IN */
   String accountId;
-  final Observable<ChatService.Message> receiveMessageEventBus;
+  final Observable<Message> receiveMessageEventBus;
   ConversationService conversationService;
   String token;//TODO use this?
 
@@ -83,10 +84,10 @@ public class SessionService {
     return state == State.LOGGED_IN;
   }
 
-  public ChatService.Message sendMessage(String message, Set<String> receiverIds) {
+  public Message sendMessage(String message, Set<String> receiverIds) {
     final String accountId = getAccountId();
     if (accountId != null) {
-      final ChatService.Message sentMsg = chatService.sendMessage(accountId, message, receiverIds);
+      final Message sentMsg = chatService.sendMessage(accountId, message, receiverIds);
       conversationService.logNewMessage(sentMsg);
       return sentMsg;
     } else {

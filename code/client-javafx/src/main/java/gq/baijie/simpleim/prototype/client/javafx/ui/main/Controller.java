@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+import gq.baijie.simpleim.prototype.business.api.Message;
 import gq.baijie.simpleim.prototype.client.javafx.Main;
 import gq.baijie.simpleim.prototype.client.javafx.service.AccountService;
-import gq.baijie.simpleim.prototype.client.javafx.service.ChatService;
 import gq.baijie.simpleim.prototype.client.javafx.service.ConversationService;
 import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
 import javafx.fxml.FXML;
@@ -85,7 +85,7 @@ public class Controller {
     }
     conversationLog.setText(historyLog);
   }
-  private static String toConversationLogItem(ChatService.Message message) {
+  private static String toConversationLogItem(Message message) {
     return String.format("%s:%n%s", message.getSenderId(), message.getMessage());
   }
   private void unbindConversation() {

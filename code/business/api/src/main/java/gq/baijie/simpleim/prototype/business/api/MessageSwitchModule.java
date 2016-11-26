@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.client.javafx.service;
+package gq.baijie.simpleim.prototype.business.api;
 
 import javax.inject.Singleton;
 

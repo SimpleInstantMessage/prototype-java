@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.client.javafx.service;
+package gq.baijie.simpleim.prototype.business.api;
 
 import javax.inject.Inject;
 
@@ -7,7 +7,7 @@ import rx.subjects.PublishSubject;
 
 public class MemoryMessageSwitchService implements MessageSwitchService {
 
-  private final PublishSubject<ChatService.Message> messageBus = PublishSubject.create();
+  private final PublishSubject<Message> messageBus = PublishSubject.create();
 
   @Inject
   public MemoryMessageSwitchService() {
@@ -21,12 +21,12 @@ public class MemoryMessageSwitchService implements MessageSwitchService {
   public class Session implements MessageSwitchService.Session {
 
     @Override
-    public void sendMessage(ChatService.Message message) {
+    public void sendMessage(Message message) {
       messageBus.onNext(message);
     }
 
     @Override
-    public Observable<ChatService.Message> receiveMessages() {
+    public Observable<Message> receiveMessages() {
       return messageBus.asObservable();
     }
 

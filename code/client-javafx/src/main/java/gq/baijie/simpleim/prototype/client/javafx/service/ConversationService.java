@@ -1,6 +1,5 @@
 package gq.baijie.simpleim.prototype.client.javafx.service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import gq.baijie.simpleim.prototype.business.api.Message;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import rx.Observable;
@@ -33,9 +33,9 @@ public class ConversationService {
         .findAny().orElse(null);
   }
 
-  void logNewMessage(ChatService.Message message) {
+  void logNewMessage(Message message) {
     final Set<String> participantIds = message.getReceivers().stream()
-        .map(ChatService.Message.Receiver::getReceiverId)
+        .map(Message.Receiver::getReceiverId)
         .collect(Collectors.toSet());
     Conversation conversation = touchConversation(participantIds);
     conversation.addMessage(message);
@@ -62,8 +62,8 @@ public class ConversationService {
 
     final Set<String> participantIds;
     //TODO memory guard
-    final List<ChatService.Message> messages = new LinkedList<>();
-    final PublishSubject<ChatService.Message> addNewMessageEvents = PublishSubject.create();
+    final List<Message> messages = new LinkedList<>();
+    final PublishSubject<Message> addNewMessageEvents = PublishSubject.create();
 
     public Conversation(@Nonnull Set<String> participantIds) {
       this.participantIds = Collections.unmodifiableSet(participantIds);
@@ -73,16 +73,16 @@ public class ConversationService {
       return participantIds;
     }
 
-    public void addMessage(ChatService.Message message) {
+    public void addMessage(Message message) {
       messages.add(message);
       addNewMessageEvents.onNext(message);
     }
 
-    public List<ChatService.Message> getMessages() {
+    public List<Message> getMessages() {
       return Collections.unmodifiableList(messages);
     }
 
-    public Observable<ChatService.Message> getAddNewMessageEvents() {
+    public Observable<Message> getAddNewMessageEvents() {
       return addNewMessageEvents.asObservable();
     }
 
