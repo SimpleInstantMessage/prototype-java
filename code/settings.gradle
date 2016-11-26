@@ -21,6 +21,7 @@ include 'io:network:netty:common'
 include 'io:network:netty:server'
 include 'io:network:netty:client'
 include 'io:network:netty:integration-testing'
+include 'server'
 include 'client-javafx'
 
 rootProject.name = 'prototype'
