@@ -66,14 +66,24 @@ public class Controller {
   }
 
   private void bindConversation(ConversationService.Conversation conversation) {
+    // unbind other conversation
     unbindConversation();
+    // clear log of other conversation
     conversationLog.setText("");
+    // append new received messages
     conversationSubscription = conversation.getAddNewMessageEvents().subscribe(m -> {
-      conversationLog.appendText("\n" + m.getMessage());//TODO improve this
+      conversationLog.appendText(m.getMessage() + "\n");//TODO improve this
     });
-    conversationLog.setText(conversation.getMessages().stream()
-                                .map(ChatService.Message::getMessage)
-                                .collect(Collectors.joining("\n")));
+    // show historyLog
+    final String historyLog;
+    if (conversation.getMessages().isEmpty()) {
+      historyLog = "";
+    } else {
+      historyLog = conversation.getMessages().stream()
+          .map(ChatService.Message::getMessage)
+          .collect(Collectors.joining("\n", "", "\n"));
+    }
+    conversationLog.setText(historyLog);
   }
   private void unbindConversation() {
     if (conversationSubscription != null) {
