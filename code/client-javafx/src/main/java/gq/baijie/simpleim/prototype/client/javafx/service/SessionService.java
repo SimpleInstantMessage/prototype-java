@@ -27,12 +27,21 @@ public class SessionService {
   private PublishSubject<ChangeEvent<State>> stateChangeEvents = PublishSubject.create();
   /* when state == LOGGED_IN */
   String accountId;
-  Observable<ChatService.Message> receiveMessageEventBus;
+  final Observable<ChatService.Message> receiveMessageEventBus;
   ConversationService conversationService;
   String token;//TODO use this?
 
   @Inject
-  public SessionService() {
+  public SessionService(ChatService chatService) {
+    receiveMessageEventBus = chatService.newMessageEventBus()
+        .filter(m -> state == State.LOGGED_IN)
+        .filter(m -> m.getReceivers().stream().anyMatch(r -> accountId.equals(r.getReceiverId())));
+    //TODO release receiveMessageEventBus (onFinish and unsubscribe)
+    receiveMessageEventBus.subscribe(m -> {
+      if (conversationService != null) {
+        conversationService.logNewMessage(m);
+      }
+    });
   }
 
   public State getState() {
@@ -54,15 +63,10 @@ public class SessionService {
   public void gotoHaveLoggedInState(@Nonnull String accountId) {//TODO token?
     this.accountId = accountId;
     conversationService = new ConversationService();
-    receiveMessageEventBus = chatService.newMessageEventBus().filter(m -> m.getReceivers().stream()
-        .anyMatch(receiver -> accountId.equals(receiver.getReceiverId())));
-    receiveMessageEventBus.subscribe(m -> conversationService.logNewMessage(m));
     changeState(State.LOGGED_IN);
   }
 
   public void gotoHaveLoggedOutState() {
-    //TODO release receiveMessageEventBus
-    receiveMessageEventBus = null;
     conversationService = null;
     accountId = null;
     changeState(State.LOGGED_OUT);
