@@ -87,7 +87,9 @@ public class SessionService {
   public ChatService.Message sendMessage(String message, Set<String> receiverIds) {
     final String accountId = getAccountId();
     if (accountId != null) {
-      return chatService.sendMessage(accountId, message, receiverIds);
+      final ChatService.Message sentMsg = chatService.sendMessage(accountId, message, receiverIds);
+      conversationService.logNewMessage(sentMsg);
+      return sentMsg;
     } else {
       logger.error("send message when haven't logged in", new IllegalStateException());
       return null;
