@@ -72,7 +72,7 @@ public class Controller {
     conversationLog.setText("");
     // append new received messages
     conversationSubscription = conversation.getAddNewMessageEvents().subscribe(m -> {
-      conversationLog.appendText(m.getMessage() + "\n");//TODO improve this
+      conversationLog.appendText(toConversationLogItem(m) + "\n");//TODO improve this
     });
     // show historyLog
     final String historyLog;
@@ -80,10 +80,13 @@ public class Controller {
       historyLog = "";
     } else {
       historyLog = conversation.getMessages().stream()
-          .map(ChatService.Message::getMessage)
+          .map(Controller::toConversationLogItem)
           .collect(Collectors.joining("\n", "", "\n"));
     }
     conversationLog.setText(historyLog);
+  }
+  private static String toConversationLogItem(ChatService.Message message) {
+    return String.format("%s:%n%s", message.getSenderId(), message.getMessage());
   }
   private void unbindConversation() {
     if (conversationSubscription != null) {
