@@ -1,8 +1,0 @@
-
-group = "${group}.io.network.netty.client"
-
-dependencies {
-
-  compile project(':io:network:netty:common')
-
-}
