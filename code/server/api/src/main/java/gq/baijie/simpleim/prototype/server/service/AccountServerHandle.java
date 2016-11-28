@@ -26,9 +26,9 @@ public interface AccountServerHandle {
   class RegisterRequestParameters {
 
     @Nonnull
-    String accountId;
+    public String accountId;
     @Nonnull
-    String password;
+    public String password;
   }
 
 
@@ -38,9 +38,9 @@ public interface AccountServerHandle {
   class LoginRequestParameters {
 
     @Nonnull
-    String accountId;
+    public String accountId;
     @Nonnull
-    String password;
+    public String password;
   }
 
 
@@ -50,7 +50,7 @@ public interface AccountServerHandle {
   class LogoutRequestParameters {
 
     @Nonnull
-    String accountId;
+    public String accountId;
   }
 
   interface GetOnlineUsersRequest extends Request<Void, List<String>> {
