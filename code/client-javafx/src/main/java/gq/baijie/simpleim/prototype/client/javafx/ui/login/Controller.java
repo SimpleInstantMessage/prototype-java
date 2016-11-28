@@ -2,6 +2,7 @@ package gq.baijie.simpleim.prototype.client.javafx.ui.login;
 
 import gq.baijie.simpleim.prototype.client.javafx.Main;
 import gq.baijie.simpleim.prototype.client.javafx.service.AccountService;
+import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.control.TextField;
 public class Controller {
 
   private final AccountService accountService;
+  private final SessionService sessionService;
 
   @FXML
   private Label errorMessageOutput;
@@ -23,6 +25,7 @@ public class Controller {
 
   public Controller() {
     accountService = Main.INSTANCE.serviceComponent.getAccountService();
+    sessionService = Main.INSTANCE.serviceComponent.getSessionService();
   }
 
   @FXML
@@ -50,7 +53,7 @@ public class Controller {
     final String accountId = accountIdInput.getText();
     final String password = passwordInput.getText();
     if (validateInput(accountId, password)) {
-      final AccountService.LoginResult loginResult = accountService.login(accountId, password);
+      final AccountService.LoginResult loginResult = sessionService.login(accountId, password);
       if (loginResult != AccountService.LoginResult.SUCCESS) {
         errorMessageOutput.setText(loginResult.toString());
         errorMessageOutput.setVisible(true);

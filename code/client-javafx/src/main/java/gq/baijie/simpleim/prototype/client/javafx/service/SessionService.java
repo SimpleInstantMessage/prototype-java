@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import gq.baijie.simpleim.prototype.business.api.Message;
+import gq.baijie.simpleim.prototype.client.javafx.service.AccountService.LoginResult;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -20,6 +21,8 @@ public class SessionService {
 
   final Logger logger = LoggerFactory.getLogger(SessionService.class);
 
+  @Inject
+  AccountService accountService;
   @Inject
   ChatService chatService;
 
@@ -60,13 +63,29 @@ public class SessionService {
     return conversationService;
   }
 
-  public void gotoHaveLoggedInState(@Nonnull String accountId) {//TODO token?
+  public LoginResult login(@Nonnull String accountId, @Nonnull String password) {
+    if (haveLoggedIn()) {
+      throw new IllegalStateException("have logged in");
+    }
+    final LoginResult result = accountService.login(accountId, password);
+    if (result == LoginResult.SUCCESS) {
+      gotoHaveLoggedInState(accountId);
+    }
+    return result;
+  }
+
+  public void logout() {
+    accountService.logout(getAccountId());
+    gotoHaveLoggedOutState();
+  }
+
+  private void gotoHaveLoggedInState(@Nonnull String accountId) {//TODO token?
     this.accountId = accountId;
     conversationService = new ConversationService();
     changeState(State.LOGGED_IN);
   }
 
-  public void gotoHaveLoggedOutState() {
+  private void gotoHaveLoggedOutState() {
     conversationService = null;
     accountId = null;
     changeState(State.LOGGED_OUT);

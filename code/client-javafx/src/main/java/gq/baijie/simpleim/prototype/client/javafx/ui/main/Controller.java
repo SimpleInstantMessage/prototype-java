@@ -101,7 +101,7 @@ public class Controller {
 
   @FXML
   private void handleLogout() {
-    accountService.logout();
+    sessionService.logout();
   }
 
   @FXML
