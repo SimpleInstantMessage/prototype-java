@@ -4,11 +4,13 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import gq.baijie.simpleim.prototype.business.api.AccountService;
+import gq.baijie.simpleim.prototype.business.api.MemoryAccountModule;
 import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
 import gq.baijie.simpleim.prototype.server.impl.vertx.RemoteMessageSwitchModule;
 
 @Singleton
 @Component(modules = {
+    MemoryAccountModule.class,
 //    MessageSwitchModule.class
     RemoteMessageSwitchModule.class
 })
