@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.client.javafx.service;
+package gq.baijie.simpleim.prototype.business.api;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static gq.baijie.simpleim.prototype.client.javafx.service.DummyAccounts.ACCOUNTS;
+import static gq.baijie.simpleim.prototype.business.api.DummyAccounts.ACCOUNTS;
 
 @Singleton
 public class AccountService {

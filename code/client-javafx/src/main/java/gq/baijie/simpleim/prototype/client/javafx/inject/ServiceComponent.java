@@ -3,7 +3,7 @@ package gq.baijie.simpleim.prototype.client.javafx.inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import gq.baijie.simpleim.prototype.client.javafx.service.AccountService;
+import gq.baijie.simpleim.prototype.business.api.AccountService;
 import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
 import gq.baijie.simpleim.prototype.server.impl.vertx.RemoteMessageSwitchModule;
 
