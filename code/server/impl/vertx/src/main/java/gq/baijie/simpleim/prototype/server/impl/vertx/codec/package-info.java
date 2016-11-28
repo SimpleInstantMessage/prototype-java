@@ -1,6 +1,6 @@
 /**
  * <pre>
- * frame: length | content
+ * frame: length | record
  * length: int
  *
  * record: record id | record type | record data
