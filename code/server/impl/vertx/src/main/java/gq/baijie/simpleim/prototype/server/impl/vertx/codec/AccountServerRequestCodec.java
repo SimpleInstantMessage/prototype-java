@@ -35,12 +35,11 @@ public class AccountServerRequestCodec implements RecordDataCodec {
 
   @Override
   public Object decodeRecordData(byte recordType, Buffer recordData) {
-    switch (recordType) {
-      case RECORD_TYPE_REQUEST:
-        return decodeRequestRecordData(recordData);
-      default:
-        logger.error("unknown recordType: {}", recordType, new IllegalStateException());
-        return null;
+    if (recordType == RECORD_TYPE_REQUEST) {
+      return decodeRequestRecordData(recordData);
+    } else {
+      logger.error("unknown recordType: {}", recordType, new IllegalStateException());
+      return null;
     }
   }
 
@@ -74,21 +73,21 @@ public class AccountServerRequestCodec implements RecordDataCodec {
   }
 
   private AccountServerRequest decodeRequestRecordData(Buffer recordData) {
-    byte requestType = recordData.getByte(0);
-    Buffer requestData = recordData.getBuffer(1, recordData.length());
-    Object decodedRequestData = recordData;
+    final byte requestType = recordData.getByte(0);
+    final Buffer requestDataRaw = recordData.getBuffer(1, recordData.length());
+    Object requestData = requestDataRaw;
     switch (requestType) {
-      case 1:
-        decodedRequestData = decodeRegisterRequestData(requestData);
+      case AccountServerRequest.TYPE_REGISTER_REQUEST:
+        requestData = decodeRegisterRequestData(requestDataRaw);
         break;
-      case 2:
-        decodedRequestData = decodeLoginRequestData(requestData);
+      case AccountServerRequest.TYPE_LOGIN_REQUEST:
+        requestData = decodeLoginRequestData(requestDataRaw);
         break;
-      case 3:
-        decodedRequestData = decodeLogoutRequestData(requestData);
+      case AccountServerRequest.TYPE_LOGOUT_REQUEST:
+        requestData = decodeLogoutRequestData(requestDataRaw);
         break;
-      case 4:
-        decodedRequestData = decodeGetOnlineUsersRequestData(requestData);
+      case AccountServerRequest.TYPE_GET_ONLINE_USERS_REQUEST:
+        requestData = decodeGetOnlineUsersRequestData(requestDataRaw);
         break;
       default:
         logger.error("unknown requestType: {}", requestType, new IllegalStateException());
@@ -96,7 +95,7 @@ public class AccountServerRequestCodec implements RecordDataCodec {
     }
     AccountServerRequest request = new AccountServerRequest();
     request.type = requestType;
-    request.data = decodedRequestData;
+    request.data = requestData;
     return request;
   }
 
