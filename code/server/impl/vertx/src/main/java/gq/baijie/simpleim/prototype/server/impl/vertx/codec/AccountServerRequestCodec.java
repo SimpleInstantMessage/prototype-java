@@ -54,16 +54,6 @@ public class AccountServerRequestCodec implements RecordDataCodec {
     }
   }
 
-  /*public Buffer encodeToRecord(short recordId, RegisterRequestParameters request) {
-    final Buffer requestData = encodeToRegisterRequestData(request);
-    final Buffer recordData = encodeToRecordData((byte) 1, requestData);
-    return RecordCodec.encodeToRecord(recordId, RECORD_TYPE_REQUEST, recordData);
-  }
-
-  private Buffer encodeToRecordData(byte requestType, Buffer requestData) {
-    return Buffer.buffer().appendByte(requestType).appendBuffer(requestData);
-  }*/
-
   private Buffer encodeRequestToRecordData(AccountServerRequest request) {
     Buffer requestData = null;
     if (request.data == null) {

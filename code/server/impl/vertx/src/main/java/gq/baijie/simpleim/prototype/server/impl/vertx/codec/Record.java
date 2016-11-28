@@ -22,13 +22,6 @@ public class Record<T> {
     this.data = data;
   }
 
-  /*public static <T> Record of(short id, byte type, T data) {
-    Record<T> result = new Record<>();
-    result.id = id;
-    result.type = type;
-    result.data = data;
-    return result;
-  }*/
   public static Record<AccountServerRequest> of(AccountServerRequest request) {
     return new Record<>((byte) 1, request);
   }
