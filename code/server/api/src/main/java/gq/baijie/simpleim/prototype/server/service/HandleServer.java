@@ -8,6 +8,8 @@ public class HandleServer {
 
   @Inject
   MessageSwitchServer messageSwitchServer;
+  @Inject
+  AccountServer accountServer;
 
   @Inject
   public HandleServer() {
@@ -16,6 +18,9 @@ public class HandleServer {
   public void onNewHandle(Object handle) {
     if (handle instanceof MessageSwitchService.Session) {
       messageSwitchServer.onReceiveMessageSwitchHandle((MessageSwitchService.Session) handle);
+    }
+    if (handle instanceof AccountServerHandle) {
+      accountServer.onReceiveHandler((AccountServerHandle) handle);
     }
   }
 

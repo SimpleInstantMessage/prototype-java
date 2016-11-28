@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import gq.baijie.simpleim.prototype.business.api.AccountService;
 import gq.baijie.simpleim.prototype.business.api.Message;
 import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
 import rx.Observable;
@@ -19,7 +20,10 @@ public class MockServer implements Server {
 
   private final PublishSubject<NewConnectEvent> connects = PublishSubject.create();
 
-  private final NewConnectEvent mockNewConnectEvent = () -> Observable.just(new MockSession());
+  private final NewConnectEvent mockNewConnectEvent = () -> Observable.just(
+      new MockSession(),
+      new MockAccountServerHandle()
+  );
 
   @Inject
   public MockServer() {
@@ -59,6 +63,30 @@ public class MockServer implements Server {
 
     @Override
     public void close() {
+    }
+  }
+
+  private class MockAccountServerHandle implements AccountServerHandle {
+
+    @Override
+    public Observable<Request> requests() {
+      return Observable.just(new MockLoginRequest());
+    }
+
+    private class MockLoginRequest implements LoginRequest {
+
+      @Override
+      public LoginRequestParameters parameters() {
+        final LoginRequestParameters parameters = new LoginRequestParameters();
+        parameters.accountId = "baijie";
+        parameters.password = "baijie";
+        return parameters;
+      }
+
+      @Override
+      public void response(AccountService.LoginResult result) {
+        logger.info("MockLoginRequest.response(result: {})", result);
+      }
     }
   }
 
