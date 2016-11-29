@@ -14,15 +14,15 @@ import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerResponse;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.Record;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle2;
+import gq.baijie.simpleim.prototype.server.service.AccountServerHandle;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.net.NetSocket;
 import io.vertx.core.parsetools.RecordParser;
 
-public class VertxAccountServerHandle2 implements AccountServerHandle2 {
+public class VertxAccountServerHandle implements AccountServerHandle {
 
-  private final Logger logger = LoggerFactory.getLogger(VertxAccountServerHandle2.class);
+  private final Logger logger = LoggerFactory.getLogger(VertxAccountServerHandle.class);
 
   private final NetSocket socket;
 
@@ -30,7 +30,7 @@ public class VertxAccountServerHandle2 implements AccountServerHandle2 {
 
   OnReceiveRequestListener requestListener = null;
 
-  public VertxAccountServerHandle2(NetSocket socket, RecordCodec recordCodec) {
+  public VertxAccountServerHandle(NetSocket socket, RecordCodec recordCodec) {
     this.socket = socket;
     this.recordCodec = recordCodec;
     initSocketHandler();

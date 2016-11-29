@@ -8,9 +8,9 @@ import javax.inject.Inject;
 import gq.baijie.simpleim.prototype.business.api.AccountService;
 import gq.baijie.simpleim.prototype.business.api.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.api.AccountService.RegisterResult;
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle2.OnReceiveRequestListener;
+import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.OnReceiveRequestListener;
 
-public class AccountServer2 {
+public class AccountServer {
 
   private final RequestListener listener = new RequestListener();
 
@@ -18,10 +18,10 @@ public class AccountServer2 {
   AccountService accountService;
 
   @Inject
-  public AccountServer2() {
+  public AccountServer() {
   }
 
-  public void onReceiveHandler(AccountServerHandle2 handle) {
+  public void onReceiveHandler(AccountServerHandle handle) {
     handle.setOnReceiveRequestListener(listener);
   }
 

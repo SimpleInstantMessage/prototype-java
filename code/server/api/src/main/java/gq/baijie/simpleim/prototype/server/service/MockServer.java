@@ -22,7 +22,7 @@ public class MockServer implements Server {
 
   private final NewConnectEvent mockNewConnectEvent = () -> Observable.just(
       new MockSession(),
-      new MockAccountServerHandle2()
+      new MockAccountServerHandle()
   );
 
   @Inject
@@ -66,12 +66,12 @@ public class MockServer implements Server {
     }
   }
 
-  private class MockAccountServerHandle2 implements AccountServerHandle2 {
+  private class MockAccountServerHandle implements AccountServerHandle {
 
     @Override
     public void setOnReceiveRequestListener(OnReceiveRequestListener listener) {
       final LoginResult result = listener.onReceiveLoginRequest("baijie", "baijie");
-      logger.info("MockAccountServerHandle2 receive LoginResult: {}", result);
+      logger.info("MockAccountServerHandle receive LoginResult: {}", result);
     }
   }
 
