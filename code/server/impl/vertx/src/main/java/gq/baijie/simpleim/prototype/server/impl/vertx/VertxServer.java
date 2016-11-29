@@ -77,7 +77,7 @@ public class VertxServer implements Server {
     accountServer = vertx.createNetServer();
 
     accountServer.connectHandler(socket -> {
-      connects.onNext(() -> Observable.just(new VertxAccountServerHandle(socket, recordCodec)));
+      connects.onNext(() -> Observable.just(new VertxAccountServerHandle2(socket, recordCodec)));
     });
 
     accountServer.listen(4322, res -> {

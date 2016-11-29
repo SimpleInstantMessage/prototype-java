@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import gq.baijie.simpleim.prototype.business.api.AccountService;
+import gq.baijie.simpleim.prototype.business.api.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.api.Message;
 import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
 import rx.Observable;
@@ -22,7 +22,8 @@ public class MockServer implements Server {
 
   private final NewConnectEvent mockNewConnectEvent = () -> Observable.just(
       new MockSession(),
-      new MockAccountServerHandle()
+      new MockAccountServerHandle(),
+      new MockAccountServerHandle2()
   );
 
   @Inject
@@ -84,9 +85,18 @@ public class MockServer implements Server {
       }
 
       @Override
-      public void response(AccountService.LoginResult result) {
+      public void response(LoginResult result) {
         logger.info("MockLoginRequest.response(result: {})", result);
       }
+    }
+  }
+
+  private class MockAccountServerHandle2 implements AccountServerHandle2 {
+
+    @Override
+    public void setOnReceiveRequestListener(OnReceiveRequestListener listener) {
+      final LoginResult result = listener.onReceiveLoginRequest("baijie", "baijie");
+      logger.info("MockAccountServerHandle2 receive LoginResult: {}", result);
     }
   }
 

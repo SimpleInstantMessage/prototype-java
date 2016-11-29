@@ -10,6 +10,8 @@ public class HandleServer {
   MessageSwitchServer messageSwitchServer;
   @Inject
   AccountServer accountServer;
+  @Inject
+  AccountServer2 accountServer2;
 
   @Inject
   public HandleServer() {
@@ -21,6 +23,9 @@ public class HandleServer {
     }
     if (handle instanceof AccountServerHandle) {
       accountServer.onReceiveHandler((AccountServerHandle) handle);
+    }
+    if (handle instanceof AccountServerHandle2) {
+      accountServer2.onReceiveHandler((AccountServerHandle2) handle);
     }
   }
 
