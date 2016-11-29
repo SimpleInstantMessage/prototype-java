@@ -20,7 +20,7 @@ public class VertxServer implements Server {
   @Inject
   RecordCodec recordCodec;
 
-  private final PublishSubject<NewConnectEvent> connects = PublishSubject.create();
+  private final PublishSubject<Connect> connects = PublishSubject.create();
 
   private final Vertx vertx = Vertx.vertx();
   private NetServer server;
@@ -94,7 +94,7 @@ public class VertxServer implements Server {
   }
 
   @Override
-  public Observable<NewConnectEvent> connects() {
+  public Observable<Connect> connects() {
     return connects;
   }
 

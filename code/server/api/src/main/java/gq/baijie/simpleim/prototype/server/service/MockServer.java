@@ -17,9 +17,9 @@ public class MockServer implements Server {
 
   private final Logger logger = LoggerFactory.getLogger(MockServer.class);
 
-  private final PublishSubject<NewConnectEvent> connects = PublishSubject.create();
+  private final PublishSubject<Connect> connects = PublishSubject.create();
 
-  private final NewConnectEvent mockNewConnectEvent = () -> Observable.just(
+  private final Connect mockConnect = () -> Observable.just(
       new MockMessageSwitchServerHandle(),
       new MockAccountServerHandle()
   );
@@ -38,12 +38,12 @@ public class MockServer implements Server {
   }
 
   @Override
-  public Observable<NewConnectEvent> connects() {
+  public Observable<Connect> connects() {
     return connects;
   }
 
   public void fireNewConnectEvent() {
-    connects.onNext(mockNewConnectEvent);
+    connects.onNext(mockConnect);
   }
 
   private class MockMessageSwitchServerHandle implements MessageSwitchServerHandle {

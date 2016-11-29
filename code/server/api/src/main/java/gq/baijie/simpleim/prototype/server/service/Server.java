@@ -8,9 +8,9 @@ public interface Server {
 
   void stop();
 
-  Observable<NewConnectEvent> connects();
+  Observable<Connect> connects();
 
-  interface NewConnectEvent {
+  interface Connect {
     Observable<Object> handles();//TODO fire new handle multiple times?
   }
 
