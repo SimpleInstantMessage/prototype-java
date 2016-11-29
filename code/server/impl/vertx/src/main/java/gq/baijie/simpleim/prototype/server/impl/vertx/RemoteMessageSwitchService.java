@@ -1,73 +1,56 @@
 package gq.baijie.simpleim.prototype.server.impl.vertx;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.CompletableFuture;
-
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import gq.baijie.simpleim.prototype.business.api.Message;
 import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
-import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
-import io.vertx.core.Vertx;
-import io.vertx.core.net.NetClient;
-import io.vertx.core.net.NetClientOptions;
-import io.vertx.core.net.NetSocket;
+import gq.baijie.simpleim.prototype.server.impl.vertx.codec.Record;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
+@Singleton
 public class RemoteMessageSwitchService implements MessageSwitchService {
-  private final Logger logger = LoggerFactory.getLogger(RemoteMessageSwitchService.class);
+
+  private final RemoteChannelService channelService;
+
+  private final PublishSubject<Message> messages = PublishSubject.create();
+
+  private final Session session = new VertxSession();
 
   @Inject
-  RecordCodec recordCodec;
+  public RemoteMessageSwitchService(RemoteChannelService channelService) {
+    this.channelService = channelService;
+    init();
+  }
 
-  private final Vertx vertx = Vertx.vertx();
-
-  @Inject
-  public RemoteMessageSwitchService() {
+  private void init() {
+    channelService.records()
+        .map(record -> record.data)
+        .ofType(Message.class)
+        .subscribe(messages);
   }
 
   @Override
   public MessageSwitchService.Session connect() {
-//    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
-//    System.setProperty("org.slf4j.simpleLogger.logFile", "log-client.log");
-    NetClientOptions options = new NetClientOptions()
-//        .setLogActivity(true)
-        .setConnectTimeout(10000);
-    NetClient client = vertx.createNetClient(options);
-
-    CompletableFuture<Session> session = new CompletableFuture<>();
-    client.connect(4321, "localhost", res -> {
-      if (res.succeeded()) {
-        logger.info("Connected!");
-        NetSocket socket = res.result();
-        session.complete(new VertxClientSession(client, socket, recordCodec));
-      } else {
-        logger.info("Failed to connect: " + res.cause().getMessage());
-        session.completeExceptionally(res.cause());
-      }
-    });
-
-    try {
-      return session.get();
-    } catch (Exception e) {
-      logger.error("cannot connect", e);//TODO improve
-      return null;
-    }
+    return session;
   }
 
-  static class VertxClientSession extends VertxSession {
+  private class VertxSession implements Session {
 
-    private final NetClient client;
+    @Override
+    public void sendMessage(Message message) {
+      channelService.writeRecord(Record.of(message));
+    }
 
-    public VertxClientSession(NetClient client, NetSocket socket, RecordCodec recordCodec) {
-      super(socket, recordCodec);
-      this.client = client;
+    @Override
+    public Observable<Message> receiveMessages() {
+      return messages;
     }
 
     @Override
     public void close() {
-      super.close();
-      client.close();
+
     }
   }
 

@@ -10,7 +10,6 @@ import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
 public class RemoteMessageSwitchModule {
 
   @Provides
-  @Singleton
   MessageSwitchService provideMessageSwitchService(RemoteMessageSwitchService service) {
     return service;
   }

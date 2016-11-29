@@ -1,8 +1,5 @@
 package gq.baijie.simpleim.prototype.server.impl.vertx;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -13,84 +10,30 @@ import gq.baijie.simpleim.prototype.business.api.AccountService;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerResponse;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.Record;
-import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.net.NetClient;
-import io.vertx.core.net.NetClientOptions;
-import io.vertx.core.net.NetSocket;
-import io.vertx.core.parsetools.RecordParser;
 import rx.subjects.PublishSubject;
 
 @Singleton
 public class RemoteAccountService implements AccountService {
 
-  private final Logger logger = LoggerFactory.getLogger(RemoteAccountService.class);
-
-  @Inject
-  RecordCodec recordCodec;
-
-  private final Vertx vertx = Vertx.vertx();
-  private final NetClient client;
-  private NetSocket socket = null;
+  private final RemoteChannelService channelService;
 
   private final PublishSubject<AccountServerResponse> responses = PublishSubject.create();
 
   @Inject
-  public RemoteAccountService() {
-    NetClientOptions options = new NetClientOptions()
-        .setConnectTimeout(10000);
-    client = vertx.createNetClient(options);
-    client.connect(4321, "localhost", res -> {
-      if (res.succeeded()) {
-        logger.info("RemoteAccountService Connected!");
-        socket = res.result();
-        initSocketHandler();
-      } else {
-        logger.warn("RemoteAccountService Failed to connect", res.cause());
-      }
-    });
+  public RemoteAccountService(RemoteChannelService channelService) {
+    this.channelService = channelService;
+    init();
   }
 
-  private void initSocketHandler() {
-    final int lengthChunkSize = 4;
-    RecordParser parser = RecordParser.newFixed(lengthChunkSize, null);
-    Handler<Buffer> handler = new Handler<Buffer>() {
-      boolean isSizeChunk = true;
-
-      @Override
-      public void handle(Buffer buffer) {
-        if (isSizeChunk) {
-          int size = buffer.getInt(0);
-          parser.fixedSizeMode(size);
-          isSizeChunk = false;
-        } else {
-          onReceiveRecord(buffer);
-          parser.fixedSizeMode(lengthChunkSize);
-          isSizeChunk = true;
-        }
-      }
-    };
-    parser.setOutput(handler);
-    socket.handler(parser);
-  }
-
-  private void onReceiveRecord(Buffer record) {
-    final Record decodeRecord = recordCodec.decodeRecord(record);
-    if (AccountServerResponse.class.equals(decodeRecord.data.getClass())) {
-      responses.onNext((AccountServerResponse) decodeRecord.data);
-    } else {
-      logger.warn("RemoteAccountService received non-response record: {}", record);
-    }
+  private void init() {
+    channelService.records()
+        .map(record -> record.data)
+        .ofType(AccountServerResponse.class)
+        .subscribe(responses);
   }
 
   private void writeRecord(Record record) {
-    final Buffer encodedRecord = recordCodec.encodeToRecord(record);
-    final Buffer frame = Buffer.buffer()
-        .appendInt(encodedRecord.length())
-        .appendBuffer(encodedRecord);
-    socket.write(frame);
+    channelService.writeRecord(record);
   }
 
   @Override

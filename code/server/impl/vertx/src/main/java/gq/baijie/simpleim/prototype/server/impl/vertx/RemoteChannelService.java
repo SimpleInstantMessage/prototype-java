@@ -3,31 +3,52 @@ package gq.baijie.simpleim.prototype.server.impl.vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gq.baijie.simpleim.prototype.business.api.Message;
-import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.Record;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.net.NetClient;
+import io.vertx.core.net.NetClientOptions;
 import io.vertx.core.net.NetSocket;
 import io.vertx.core.parsetools.RecordParser;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-class VertxSession implements MessageSwitchService.Session {
+@Singleton
+public class RemoteChannelService {
 
-  private final Logger logger = LoggerFactory.getLogger(VertxSession.class);
+  private final Logger logger = LoggerFactory.getLogger(RemoteChannelService.class);
 
-  private final PublishSubject<Message> receiveMessages = PublishSubject.create();
+  @Inject
+  RecordCodec recordCodec;
 
-  private final NetSocket socket;
+  private final Vertx vertx = Vertx.vertx();
+  private final NetClient client =
+      vertx.createNetClient(new NetClientOptions().setConnectTimeout(10000));
 
-  private final RecordCodec recordCodec;
+  private NetSocket socket = null;
 
-  VertxSession(NetSocket socket, RecordCodec recordCodec) {
-    this.socket = socket;
-    this.recordCodec = recordCodec;
-    initSocketHandler();
+  private final PublishSubject<Record> records = PublishSubject.create();
+
+  @Inject
+  public RemoteChannelService() {
+    connect();
+  }
+
+  private void connect() {
+    client.connect(4321, "localhost", res -> {
+      if (res.succeeded()) {
+        logger.info("RemoteAccountService Connected!");
+        socket = res.result();
+        initSocketHandler();
+      } else {
+        logger.warn("RemoteAccountService Failed to connect", res.cause());
+      }
+    });
   }
 
   private void initSocketHandler() {
@@ -54,42 +75,28 @@ class VertxSession implements MessageSwitchService.Session {
   }
 
   private void onReceiveRecord(Buffer record) {
-    onReceiveRecord(recordCodec.decodeRecord(record));
+    final Record decodeRecord = recordCodec.decodeRecord(record);
+    onReceiveRecord(decodeRecord);
   }
 
   private void onReceiveRecord(Record record) {
-    if (Message.class.equals(record.data.getClass())) {
-      onReceiveMessage(((Message) record.data));
-    } else {
-      logger.warn("unknown type of received record.data: {}", record.data.getClass());
-    }
+    records.onNext(record);
   }
 
-  private void onReceiveMessage(Message message) {
-    receiveMessages.onNext(message);
+  Observable<Record> records() {
+    return records;
   }
 
-  private void writeRecord(Record record) {
+  void writeRecord(final Record record) {
     final Buffer encodedRecord = recordCodec.encodeToRecord(record);
     final Buffer frame = Buffer.buffer()
         .appendInt(encodedRecord.length())
         .appendBuffer(encodedRecord);
-    socket.write(frame);
-  }
-
-  @Override
-  public void sendMessage(Message message) {
-    writeRecord(Record.of(message));
-  }
-
-  @Override
-  public Observable<Message> receiveMessages() {
-    return receiveMessages;
-  }
-
-  @Override
-  public void close() {
-    socket.close();
+    if (socket != null) {
+      socket.write(frame);
+    } else {
+      logger.warn("because socket == null, write this record to /dev/null: {}", record);
+    }
   }
 
 }
