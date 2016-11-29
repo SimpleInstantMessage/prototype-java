@@ -2,6 +2,8 @@ package gq.baijie.simpleim.prototype.server.impl.vertx.codec;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import gq.baijie.simpleim.prototype.business.api.Message;
+
 public class Record<T> {
 
   private static AtomicInteger idGenerator = new AtomicInteger();
@@ -28,6 +30,10 @@ public class Record<T> {
 
   public static Record<AccountServerResponse> of(AccountServerResponse response) {
     return new Record<>((byte) 2, response);
+  }
+
+  public static Record<Message> of(Message message) {
+    return new Record<>(MessageCodec.RECORD_TYPE, message);
   }
 
 }

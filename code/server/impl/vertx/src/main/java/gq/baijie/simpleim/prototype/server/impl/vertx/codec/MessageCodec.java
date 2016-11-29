@@ -1,5 +1,9 @@
 package gq.baijie.simpleim.prototype.server.impl.vertx.codec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,12 +12,45 @@ import gq.baijie.simpleim.prototype.business.api.Message;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.parsetools.RecordParser;
 
-public class MessageRecordCodec {
+public class MessageCodec implements RecordDataCodec {
+
+  static final byte RECORD_TYPE = 3;
+  private final Logger logger = LoggerFactory.getLogger(MessageCodec.class);
+
+  @Override
+  public List<Byte> supportDecodeRecordTypes() {
+    return Collections.singletonList(RECORD_TYPE);
+  }
+
+  @Override
+  public List<Class> supportEncodeRecordTypes() {
+    return Collections.singletonList(Message.class);
+  }
+
+  @Override
+  public Object decodeRecordData(byte recordType, Buffer recordData) {
+    if (recordType == RECORD_TYPE) {
+      return decodeMessage(recordData);
+    } else {
+      logger.error("unknown recordType: {}", recordType, new IllegalStateException());
+      return null;
+    }
+  }
+
+  @Override
+  public Buffer encodeToRecordData(Object data) {
+    if (Message.class.equals(data.getClass())) {
+      return encodeMessage((Message) data);
+    } else {
+      logger.error("cannot encode record data: {}", data, new IllegalStateException());
+      return Buffer.buffer(0);
+    }
+  }
 
   // UTF-8 doesn't contain FIELD_DELIMITER
   private static final Buffer FIELD_DELIMITER = Buffer.buffer(1).appendByte((byte) 0b1100_0000);
 
-  public static Buffer encodeMessage(Message message) {
+  private static Buffer encodeMessage(Message message) {
     // Write strings in UTF-8 encoding
     final Buffer buffer = Buffer.buffer();
     message.getReceivers()
@@ -23,7 +60,7 @@ public class MessageRecordCodec {
     return buffer;
   }
 
-  public static Message decodeMessage(Buffer messageRecord) {
+  private static Message decodeMessage(Buffer messageRecord) {
     LinkedList<String> fields = new LinkedList<>();
     RecordParser
         .newDelimited(FIELD_DELIMITER, field -> fields.add(field.toString()))

@@ -11,8 +11,8 @@ public class RemoteMessageSwitchModule {
 
   @Provides
   @Singleton
-  MessageSwitchService provideMessageSwitchService() {
-    return new RemoteMessageSwitchService();
+  MessageSwitchService provideMessageSwitchService(RemoteMessageSwitchService service) {
+    return service;
   }
 
 }

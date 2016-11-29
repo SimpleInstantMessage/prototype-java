@@ -14,6 +14,7 @@ public class CodecModule {
     RecordCodec recordCodec = new RecordCodec();
     recordCodec.registerRecordDataCodec(new AccountServerRequestCodec());
     recordCodec.registerRecordDataCodec(new AccountServerResponseCodec());
+    recordCodec.registerRecordDataCodec(new MessageCodec());
     return recordCodec;
   }
 

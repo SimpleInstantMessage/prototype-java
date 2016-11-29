@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
+import javax.inject.Inject;
+
 import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
+import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
 import io.vertx.core.Vertx;
 import io.vertx.core.net.NetClient;
 import io.vertx.core.net.NetClientOptions;
@@ -14,7 +17,14 @@ import io.vertx.core.net.NetSocket;
 public class RemoteMessageSwitchService implements MessageSwitchService {
   private final Logger logger = LoggerFactory.getLogger(RemoteMessageSwitchService.class);
 
+  @Inject
+  RecordCodec recordCodec;
+
   private final Vertx vertx = Vertx.vertx();
+
+  @Inject
+  public RemoteMessageSwitchService() {
+  }
 
   @Override
   public MessageSwitchService.Session connect() {
@@ -30,7 +40,7 @@ public class RemoteMessageSwitchService implements MessageSwitchService {
       if (res.succeeded()) {
         logger.info("Connected!");
         NetSocket socket = res.result();
-        session.complete(new VertxClientSession(socket, client));
+        session.complete(new VertxClientSession(client, socket, recordCodec));
       } else {
         logger.info("Failed to connect: " + res.cause().getMessage());
         session.completeExceptionally(res.cause());
@@ -49,8 +59,8 @@ public class RemoteMessageSwitchService implements MessageSwitchService {
 
     private final NetClient client;
 
-    public VertxClientSession(NetSocket socket, NetClient client) {
-      super(socket);
+    public VertxClientSession(NetClient client, NetSocket socket, RecordCodec recordCodec) {
+      super(socket, recordCodec);
       this.client = client;
     }
 
