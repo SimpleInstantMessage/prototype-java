@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.LoginRequestParameters;
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.LogoutRequestParameters;
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.RegisterRequestParameters;
+import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest.LoginRequestParameters;
+import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest.LogoutRequestParameters;
+import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest.RegisterRequestParameters;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.parsetools.RecordParser;
 

@@ -2,10 +2,6 @@ package gq.baijie.simpleim.prototype.server.impl.vertx.codec;
 
 import javax.annotation.Nonnull;
 
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.LoginRequestParameters;
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.LogoutRequestParameters;
-import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.RegisterRequestParameters;
-
 public class AccountServerRequest<T> {
 
   public static final byte TYPE_REGISTER_REQUEST = 1;
@@ -57,6 +53,26 @@ public class AccountServerRequest<T> {
     request.type = TYPE_GET_ONLINE_USERS_REQUEST;
     request.data = null;
     return request;
+  }
+
+  public static class RegisterRequestParameters {
+
+    @Nonnull
+    public String accountId;
+    @Nonnull
+    public String password;
+  }
+  public static class LoginRequestParameters {
+
+    @Nonnull
+    public String accountId;
+    @Nonnull
+    public String password;
+  }
+  public static class LogoutRequestParameters {
+
+    @Nonnull
+    public String accountId;
   }
 
 }

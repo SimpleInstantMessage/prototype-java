@@ -22,7 +22,6 @@ public class MockServer implements Server {
 
   private final NewConnectEvent mockNewConnectEvent = () -> Observable.just(
       new MockSession(),
-      new MockAccountServerHandle(),
       new MockAccountServerHandle2()
   );
 
@@ -64,30 +63,6 @@ public class MockServer implements Server {
 
     @Override
     public void close() {
-    }
-  }
-
-  private class MockAccountServerHandle implements AccountServerHandle {
-
-    @Override
-    public Observable<Request> requests() {
-      return Observable.just(new MockLoginRequest());
-    }
-
-    private class MockLoginRequest implements LoginRequest {
-
-      @Override
-      public LoginRequestParameters parameters() {
-        final LoginRequestParameters parameters = new LoginRequestParameters();
-        parameters.accountId = "baijie";
-        parameters.password = "baijie";
-        return parameters;
-      }
-
-      @Override
-      public void response(LoginResult result) {
-        logger.info("MockLoginRequest.response(result: {})", result);
-      }
     }
   }
 
