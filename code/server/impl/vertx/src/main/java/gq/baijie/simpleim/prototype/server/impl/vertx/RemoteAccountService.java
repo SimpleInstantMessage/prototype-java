@@ -42,7 +42,7 @@ public class RemoteAccountService implements AccountService {
     NetClientOptions options = new NetClientOptions()
         .setConnectTimeout(10000);
     client = vertx.createNetClient(options);
-    client.connect(4322, "localhost", res -> {
+    client.connect(4321, "localhost", res -> {
       if (res.succeeded()) {
         logger.info("RemoteAccountService Connected!");
         socket = res.result();

@@ -24,7 +24,6 @@ public class VertxServer implements Server {
 
   private final Vertx vertx = Vertx.vertx();
   private NetServer server;
-  private NetServer accountServer;
 
   @Inject
   public VertxServer() {
@@ -32,7 +31,6 @@ public class VertxServer implements Server {
 
   @Override
   public void start() {
-    startAccountServer();
 
     if (server != null) {
       return;
@@ -46,6 +44,7 @@ public class VertxServer implements Server {
 
     server.connectHandler(socket -> {
       NetSocketConnect connect = new NetSocketConnect(socket, recordCodec);
+      connect.addHandle(new VertxAccountServerHandle(connect));
       connect.addHandle(new VertxMessageSwitchServerHandle(connect));
       connects.onNext(connect);
     });
@@ -66,35 +65,6 @@ public class VertxServer implements Server {
     }
     server.close();
     server = null;
-
-    stopAccountServer();
-  }
-
-  private void startAccountServer() {
-    if (accountServer != null) {
-      return;
-    }
-    accountServer = vertx.createNetServer();
-
-    accountServer.connectHandler(socket -> {
-      NetSocketConnect connect = new NetSocketConnect(socket, recordCodec);
-      connect.addHandle(new VertxAccountServerHandle(connect));
-      connects.onNext(connect);
-    });
-
-    accountServer.listen(4322, res -> {
-      if (res.succeeded()) {
-        logger.info("Account Server is now listening!");
-      } else {
-        logger.info("Failed to bind Account Server!");
-      }
-    });
-  }
-  private void stopAccountServer() {
-    if (accountServer != null) {
-      accountServer.close();
-      accountServer = null;
-    }
   }
 
   @Override
