@@ -13,59 +13,25 @@ import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest.RegisterRequestParameters;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerResponse;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.Record;
-import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
 import gq.baijie.simpleim.prototype.server.service.AccountServerHandle;
-import io.vertx.core.Handler;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.net.NetSocket;
-import io.vertx.core.parsetools.RecordParser;
 
 public class VertxAccountServerHandle implements AccountServerHandle {
 
   private final Logger logger = LoggerFactory.getLogger(VertxAccountServerHandle.class);
 
-  private final NetSocket socket;
-
-  private final RecordCodec recordCodec;
+  private final NetSocketConnect connect;
 
   OnReceiveRequestListener requestListener = null;
 
-  public VertxAccountServerHandle(NetSocket socket, RecordCodec recordCodec) {
-    this.socket = socket;
-    this.recordCodec = recordCodec;
-    initSocketHandler();
+  public VertxAccountServerHandle(NetSocketConnect connect) {
+    this.connect = connect;
+    init();
   }
 
-  private void initSocketHandler() {
-    final int lengthChunkSize = 4;
-    RecordParser parser = RecordParser.newFixed(lengthChunkSize, null);
-    Handler<Buffer> handler = new Handler<Buffer>() {
-      boolean isSizeChunk = true;
-
-      @Override
-      public void handle(Buffer buffer) {
-        if (isSizeChunk) {
-          int size = buffer.getInt(0);
-          parser.fixedSizeMode(size);
-          isSizeChunk = false;
-        } else {
-          onReceiveRecord(buffer);
-          parser.fixedSizeMode(lengthChunkSize);
-          isSizeChunk = true;
-        }
-      }
-    };
-    parser.setOutput(handler);
-    socket.handler(parser);
-  }
-
-  private void onReceiveRecord(Buffer record) {
-    final Record decodeRecord = recordCodec.decodeRecord(record);
-    if (AccountServerRequest.class.equals(decodeRecord.data.getClass())) {
-      onReceiveRequest(decodeRecord);
-    } else {
-      logger.warn("received non-request record: {}", record);
-    }
+  private void init() {
+    connect.records()
+        .filter(record -> AccountServerRequest.class.equals(record.data.getClass()))
+        .subscribe(record -> onReceiveRequest(record));
   }
 
   private void onReceiveRequest(Record<AccountServerRequest> requestRecord) {
@@ -122,11 +88,7 @@ public class VertxAccountServerHandle implements AccountServerHandle {
   }
 
   private void writeResponse(Record responseRecord) {
-    final Buffer record = recordCodec.encodeToRecord(responseRecord);
-    final Buffer frame = Buffer.buffer()
-        .appendInt(record.length())
-        .appendBuffer(record);
-    socket.write(frame);
+    connect.writeRecord(responseRecord);
   }
 
   @Override
