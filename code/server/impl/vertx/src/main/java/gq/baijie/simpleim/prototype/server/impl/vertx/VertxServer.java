@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
 import gq.baijie.simpleim.prototype.server.service.Server;
 import io.vertx.core.Vertx;
@@ -46,8 +45,7 @@ public class VertxServer implements Server {
     server = vertx.createNetServer(options);
 
     server.connectHandler(socket -> {
-      final MessageSwitchService.Session session = new VertxSession(socket);
-      connects.onNext(() -> Observable.just(session));
+      connects.onNext(() -> Observable.just(new VertxMessageSwitchServerHandle(socket)));
     });
 
     server.listen(/*4321, */res -> {

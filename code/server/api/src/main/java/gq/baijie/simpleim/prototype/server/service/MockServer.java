@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import gq.baijie.simpleim.prototype.business.api.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.api.Message;
-import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -21,7 +20,7 @@ public class MockServer implements Server {
   private final PublishSubject<NewConnectEvent> connects = PublishSubject.create();
 
   private final NewConnectEvent mockNewConnectEvent = () -> Observable.just(
-      new MockSession(),
+      new MockMessageSwitchServerHandle(),
       new MockAccountServerHandle()
   );
 
@@ -47,22 +46,18 @@ public class MockServer implements Server {
     connects.onNext(mockNewConnectEvent);
   }
 
-  private class MockSession implements MessageSwitchService.Session {
+  private class MockMessageSwitchServerHandle implements MessageSwitchServerHandle {
+
+    @Override
+    public void setOnReceiveRequestListener(OnReceiveRequestListener listener) {
+      final List<Message.Receiver> mockReceivers =
+          Collections.singletonList(new Message.Receiver("mockReceiverId"));
+      listener.onReceiveMessage(new Message("mockSenderId", mockReceivers, "mock message"));
+    }
 
     @Override
     public void sendMessage(Message message) {
       logger.info("sendMessage(message: {})", message);
-    }
-
-    @Override
-    public Observable<Message> receiveMessages() {
-      final List<Message.Receiver> mockReceivers =
-          Collections.singletonList(new Message.Receiver("mockReceiverId"));
-      return Observable.just(new Message("mockSenderId", mockReceivers, "mock message"));
-    }
-
-    @Override
-    public void close() {
     }
   }
 
