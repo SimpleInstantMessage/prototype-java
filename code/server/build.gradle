@@ -9,10 +9,4 @@ dependencies {
     compile project(':business:common')
     compile project(':business:server')
     compile project(':impl:vertx')
-
-    def daggerVersion = '2.5'
-
-    compile "com.google.dagger:dagger:$daggerVersion"
-    compileOnly "com.google.dagger:dagger-compiler:$daggerVersion"
-    compile 'io.reactivex:rxjava:1.1.6'
 }
