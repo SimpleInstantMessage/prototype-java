@@ -3,8 +3,10 @@ package gq.baijie.simpleim.prototype.server.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -19,10 +21,10 @@ public class MockServer implements Server {
 
   private final PublishSubject<Connect> connects = PublishSubject.create();
 
-  private final Connect mockConnect = () -> Observable.just(
+  private final Connect mockConnect = new MockConnect(Arrays.asList(
       new MockMessageSwitchServerHandle(),
       new MockAccountServerHandle()
-  );
+  ));
 
   @Inject
   public MockServer() {
@@ -44,6 +46,25 @@ public class MockServer implements Server {
 
   public void fireNewConnectEvent() {
     connects.onNext(mockConnect);
+  }
+
+  private class MockConnect implements Connect {
+
+    private final List<Object> handles;
+
+    private MockConnect(List<Object> handles) {
+      this.handles = handles;
+    }
+
+    @Override
+    public void setOnCloseListener(Consumer<Connect> listener) {
+
+    }
+
+    @Override
+    public Observable<Object> handles() {
+      return Observable.from(handles);
+    }
   }
 
   private class MockMessageSwitchServerHandle implements MessageSwitchServerHandle {

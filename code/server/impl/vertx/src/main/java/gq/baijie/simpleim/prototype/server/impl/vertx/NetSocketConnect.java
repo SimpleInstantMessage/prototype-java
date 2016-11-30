@@ -2,6 +2,7 @@ package gq.baijie.simpleim.prototype.server.impl.vertx;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.Record;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.RecordCodec;
@@ -21,12 +22,23 @@ class NetSocketConnect implements Connect {
 
   private final RecordCodec recordCodec;
 
+  private Consumer<Connect> closeListener;
+
   private final PublishSubject<Record> records = PublishSubject.create();
 
   NetSocketConnect(NetSocket socket, RecordCodec recordCodec) {
     this.socket = socket;
     this.recordCodec = recordCodec;
     initSocketHandler();
+  }
+
+  private void initSocketCloseHandler() {
+    socket.closeHandler(event -> {
+      if (closeListener != null) {
+        closeListener.accept(this);
+      }
+      //TODO socket.close();
+    });
   }
 
   private void initSocketHandler() {
@@ -80,6 +92,11 @@ class NetSocketConnect implements Connect {
   @Override
   public Observable<Object> handles() {
     return Observable.from(handles);
+  }
+
+  @Override
+  public void setOnCloseListener(Consumer<Connect> listener) {
+    closeListener = listener;
   }
 
 }

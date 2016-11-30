@@ -7,7 +7,7 @@ import gq.baijie.simpleim.prototype.business.api.MemoryAccountModule;
 import gq.baijie.simpleim.prototype.business.api.MessageSwitchModule;
 import gq.baijie.simpleim.prototype.server.impl.vertx.VertxServerModule;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.CodecModule;
-import gq.baijie.simpleim.prototype.server.service.HandleServer;
+import gq.baijie.simpleim.prototype.server.service.ConnectServer;
 import gq.baijie.simpleim.prototype.server.service.Server;
 
 @Singleton
@@ -22,6 +22,6 @@ public interface ServerComponent {
 
   Server getServer();
 
-  HandleServer getHandleServer();
+  ConnectServer getConnectServer();
 
 }
