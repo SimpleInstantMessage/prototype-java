@@ -1,14 +1,6 @@
-apply plugin: 'application'
-
-group = "${group}.server"
-
-mainClassName = "${group}.Main"
-
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile project(':business:common')
-    compile project(':business:server')
-    compile project(':impl:vertx')
 
     def daggerVersion = '2.5'
 

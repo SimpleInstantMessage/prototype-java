@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import gq.baijie.simpleim.prototype.business.api.Message;
+import gq.baijie.simpleim.prototype.business.common.Message;
 import gq.baijie.simpleim.prototype.client.javafx.Main;
-import gq.baijie.simpleim.prototype.business.api.AccountService;
+import gq.baijie.simpleim.prototype.business.common.AccountService;
 import gq.baijie.simpleim.prototype.client.javafx.service.ConversationService;
 import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
 import javafx.fxml.FXML;

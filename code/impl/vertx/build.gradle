@@ -1,0 +1,5 @@
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    compile project(':business:server')
+    compile 'io.vertx:vertx-core:3.3.3'
+}

@@ -10,9 +10,9 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import gq.baijie.simpleim.prototype.business.api.AccountService;
-import gq.baijie.simpleim.prototype.business.api.Message;
-import gq.baijie.simpleim.prototype.business.api.AccountService.LoginResult;
+import gq.baijie.simpleim.prototype.business.common.AccountService;
+import gq.baijie.simpleim.prototype.business.common.Message;
+import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

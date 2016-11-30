@@ -1,7 +1,7 @@
 package gq.baijie.simpleim.prototype.server;
 
-import gq.baijie.simpleim.prototype.server.service.ConnectServer;
-import gq.baijie.simpleim.prototype.server.service.Server;
+import gq.baijie.simpleim.prototype.business.server.ConnectServer;
+import gq.baijie.simpleim.prototype.business.server.Server;
 
 public class Main implements Runnable {
 

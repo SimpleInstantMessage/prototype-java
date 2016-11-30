@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import gq.baijie.simpleim.prototype.business.api.Message;
-import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
+import gq.baijie.simpleim.prototype.business.common.Message;
+import gq.baijie.simpleim.prototype.business.common.MessageSwitchService;
 import rx.Observable;
 
 @Singleton

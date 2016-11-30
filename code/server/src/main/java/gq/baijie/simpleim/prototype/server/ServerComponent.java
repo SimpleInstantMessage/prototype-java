@@ -3,12 +3,12 @@ package gq.baijie.simpleim.prototype.server;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import gq.baijie.simpleim.prototype.business.api.MemoryAccountModule;
-import gq.baijie.simpleim.prototype.business.api.MessageSwitchModule;
-import gq.baijie.simpleim.prototype.server.impl.vertx.VertxServerModule;
-import gq.baijie.simpleim.prototype.server.impl.vertx.codec.CodecModule;
-import gq.baijie.simpleim.prototype.server.service.ConnectServer;
-import gq.baijie.simpleim.prototype.server.service.Server;
+import gq.baijie.simpleim.prototype.business.common.MemoryAccountModule;
+import gq.baijie.simpleim.prototype.business.common.MessageSwitchModule;
+import gq.baijie.simpleim.prototype.impl.vertx.VertxServerModule;
+import gq.baijie.simpleim.prototype.impl.vertx.codec.CodecModule;
+import gq.baijie.simpleim.prototype.business.server.ConnectServer;
+import gq.baijie.simpleim.prototype.business.server.Server;
 
 @Singleton
 @Component(modules = {

@@ -15,9 +15,10 @@ include 'shared'
 include 'api'
 include 'services:webservice'
 */
-include 'business:api'
-include 'server:api'
-include 'server:impl:vertx'
+include 'business:common'
+include 'business:server'
+include 'business:client'
+include 'impl:vertx'
 include 'server'
 include 'client-javafx'
 

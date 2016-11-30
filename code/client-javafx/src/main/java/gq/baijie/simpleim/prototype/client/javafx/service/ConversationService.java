@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import gq.baijie.simpleim.prototype.business.api.Message;
+import gq.baijie.simpleim.prototype.business.common.Message;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import rx.Observable;

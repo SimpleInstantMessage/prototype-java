@@ -3,11 +3,11 @@ package gq.baijie.simpleim.prototype.client.javafx.inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import gq.baijie.simpleim.prototype.business.api.AccountService;
+import gq.baijie.simpleim.prototype.business.common.AccountService;
 import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
-import gq.baijie.simpleim.prototype.server.impl.vertx.RemoteAccountServiceModule;
-import gq.baijie.simpleim.prototype.server.impl.vertx.RemoteMessageSwitchModule;
-import gq.baijie.simpleim.prototype.server.impl.vertx.codec.CodecModule;
+import gq.baijie.simpleim.prototype.impl.vertx.RemoteAccountServiceModule;
+import gq.baijie.simpleim.prototype.impl.vertx.RemoteMessageSwitchModule;
+import gq.baijie.simpleim.prototype.impl.vertx.codec.CodecModule;
 
 @Singleton
 @Component(modules = {
