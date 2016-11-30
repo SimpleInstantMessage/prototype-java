@@ -25,7 +25,7 @@ public class ConnectServer {
   public void onNewConnect(Connect connect) {
     final ManagedConnect managedConnect = new ManagedConnect(connect);
     connects.add(managedConnect);
-    connect.setOnCloseListener(c -> connects.remove(managedConnect));
+    managedConnect.getCloseEvents().subscribe(connects::remove);
     connect.handles().subscribe(handle -> onNewHandle(managedConnect, handle));
   }
 

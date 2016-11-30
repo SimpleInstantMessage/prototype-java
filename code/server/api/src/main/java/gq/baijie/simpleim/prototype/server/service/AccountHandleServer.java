@@ -9,7 +9,7 @@ import gq.baijie.simpleim.prototype.business.api.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.api.AccountService.RegisterResult;
 import gq.baijie.simpleim.prototype.server.service.AccountServerHandle.OnReceiveRequestListener;
 
-public class AccountHandleServer {
+public class AccountHandleServer implements HandleServer {
   private final AccountService accountService;
 
   private String loggedInAccountId;
@@ -17,6 +17,16 @@ public class AccountHandleServer {
   public AccountHandleServer(AccountService accountService, AccountServerHandle handle) {
     this.accountService = accountService;
     init(handle);
+  }
+
+  @Override
+  public void bindConnect(ManagedConnect connect) {
+    connect.getCloseEvents().subscribe(c -> {
+      if (loggedInAccountId != null) {
+        accountService.logout(loggedInAccountId);
+        onLoggedOut();
+      }
+    });
   }
 
   private void init(AccountServerHandle handle) {
