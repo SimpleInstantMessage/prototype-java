@@ -18,7 +18,7 @@ public class JavafxApplication extends Application {
   public void start(Stage primaryStage) throws Exception {
     this.primaryStage = primaryStage;
 
-    final SessionService sessionService = Main.INSTANCE.serviceComponent.getSessionService();
+    final SessionService sessionService = Main.INSTANCE.clientComponent.getSessionService();
     sessionService.getStateChangeEvents().subscribe(event->{
       System.out.println("oldState: "+event.oldValue+", newState: "+event.newValue);
       gotoSceneAccroddingBySessionState(event.newValue);

@@ -42,8 +42,8 @@ public class Controller {
   private TextArea inputMessage;
 
   public Controller() {
-    accountService = Main.INSTANCE.serviceComponent.getAccountService();
-    sessionService = Main.INSTANCE.serviceComponent.getSessionService();
+    accountService = Main.INSTANCE.clientComponent.getAccountService();
+    sessionService = Main.INSTANCE.clientComponent.getSessionService();
     conversationService = sessionService.getConversationService();
   }
 

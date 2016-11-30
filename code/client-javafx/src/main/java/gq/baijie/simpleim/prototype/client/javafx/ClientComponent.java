@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.client.javafx.inject;
+package gq.baijie.simpleim.prototype.client.javafx;
 
 import javax.inject.Singleton;
 
@@ -17,7 +17,7 @@ import gq.baijie.simpleim.prototype.impl.vertx.codec.CodecModule;
 //    MessageSwitchModule.class
     RemoteMessageSwitchModule.class
 })
-public interface ServiceComponent {
+public interface ClientComponent {
 
   SessionService getSessionService();
 

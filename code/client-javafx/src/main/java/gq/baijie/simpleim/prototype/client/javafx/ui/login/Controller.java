@@ -24,8 +24,8 @@ public class Controller {
   private PasswordField passwordInput;
 
   public Controller() {
-    accountService = Main.INSTANCE.serviceComponent.getAccountService();
-    sessionService = Main.INSTANCE.serviceComponent.getSessionService();
+    accountService = Main.INSTANCE.clientComponent.getAccountService();
+    sessionService = Main.INSTANCE.clientComponent.getSessionService();
   }
 
   @FXML
