@@ -5,14 +5,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import gq.baijie.simpleim.prototype.business.api.AccountService;
+import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
 import gq.baijie.simpleim.prototype.server.service.Server.Connect;
 
 public class ConnectServer {
 
   @Inject
-  MessageSwitchServer messageSwitchServer;
+  MessageSwitchService messageSwitchService;
   @Inject
-  AccountServer accountServer;
+  AccountService accountService;
 
   private final List<ManagedConnect> connects = new LinkedList<>();
 
@@ -29,10 +31,12 @@ public class ConnectServer {
 
   private void onNewHandle(ManagedConnect connect, Object handle) {
     if (handle instanceof MessageSwitchServerHandle) {
-      messageSwitchServer.onReceiveHandle(connect, (MessageSwitchServerHandle) handle);
+      new MessageSwitchHandleServer(
+          messageSwitchService, connect, (MessageSwitchServerHandle) handle);
     }
     if (handle instanceof AccountServerHandle) {
-      connect.setAccountHandleServer(accountServer.onReceiveHandle((AccountServerHandle) handle));
+      connect.setAccountHandleServer(
+          new AccountHandleServer(accountService, (AccountServerHandle) handle));
     }
   }
 
