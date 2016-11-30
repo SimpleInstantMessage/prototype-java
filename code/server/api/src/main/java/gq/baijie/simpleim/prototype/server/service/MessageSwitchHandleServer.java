@@ -5,27 +5,28 @@ import org.slf4j.LoggerFactory;
 
 import gq.baijie.simpleim.prototype.business.api.MessageSwitchService;
 
-public class MessageSwitchHandleServer {
+public class MessageSwitchHandleServer implements HandleServer {
 
   private final Logger logger = LoggerFactory.getLogger(MessageSwitchHandleServer.class);
 
-
-  private final MessageSwitchService messageSwitchService;
-
   private final MessageSwitchService.Session session;
+  private final MessageSwitchServerHandle handle;
 
-  private final ManagedConnect managedConnect;
+  private ManagedConnect managedConnect;
 
   public MessageSwitchHandleServer(MessageSwitchService messageSwitchService,
-                                   ManagedConnect managedConnect,
                                    MessageSwitchServerHandle handle) {
-    this.messageSwitchService = messageSwitchService;
     session = messageSwitchService.connect();
-    this.managedConnect = managedConnect;
-    init(handle);
+    this.handle = handle;
   }
 
-  private void init(MessageSwitchServerHandle handle) {
+  @Override
+  public void bindConnect(ManagedConnect connect) {
+    managedConnect = connect;
+    init();
+  }
+
+  private void init() {
     session.receiveMessages().subscribe(message -> {
       if (hasLoggedIn()) {
         handle.sendMessage(message);
@@ -43,7 +44,7 @@ public class MessageSwitchHandleServer {
   }
 
   private boolean hasLoggedIn() {
-    final AccountHandleServer accountHandleServer =
+    final AccountHandleServer accountHandleServer = managedConnect == null ? null :
         managedConnect.getHandleServer(AccountHandleServer.class);
     return accountHandleServer != null && accountHandleServer.getLoggedInAccountId() != null;
   }

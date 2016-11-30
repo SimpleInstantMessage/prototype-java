@@ -31,8 +31,8 @@ public class ConnectServer {
 
   private void onNewHandle(ManagedConnect connect, Object handle) {
     if (handle instanceof MessageSwitchServerHandle) {
-      new MessageSwitchHandleServer(
-          messageSwitchService, connect, (MessageSwitchServerHandle) handle);
+      connect.registerHandleServer(
+          new MessageSwitchHandleServer(messageSwitchService, (MessageSwitchServerHandle) handle));
     }
     if (handle instanceof AccountServerHandle) {
       connect.registerHandleServer(

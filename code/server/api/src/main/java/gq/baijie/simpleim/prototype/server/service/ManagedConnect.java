@@ -17,6 +17,9 @@ public class ManagedConnect {
 
   public void registerHandleServer(Object handleServer) {
     handleServers.put(handleServer.getClass(), handleServer);
+    if (handleServer instanceof HandleServer) {
+      ((HandleServer) handleServer).bindConnect(this);
+    }
   }
 
   public <T> T getHandleServer(Class<T> clazz) {
