@@ -43,7 +43,8 @@ public class MessageSwitchHandleServer {
   }
 
   private boolean hasLoggedIn() {
-    final AccountHandleServer accountHandleServer = managedConnect.getAccountHandleServer();
+    final AccountHandleServer accountHandleServer =
+        managedConnect.getHandleServer(AccountHandleServer.class);
     return accountHandleServer != null && accountHandleServer.getLoggedInAccountId() != null;
   }
 

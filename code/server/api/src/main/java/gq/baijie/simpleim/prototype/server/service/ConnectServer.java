@@ -35,7 +35,7 @@ public class ConnectServer {
           messageSwitchService, connect, (MessageSwitchServerHandle) handle);
     }
     if (handle instanceof AccountServerHandle) {
-      connect.setAccountHandleServer(
+      connect.registerHandleServer(
           new AccountHandleServer(accountService, (AccountServerHandle) handle));
     }
   }
