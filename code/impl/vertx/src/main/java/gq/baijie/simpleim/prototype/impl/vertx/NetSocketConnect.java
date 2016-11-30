@@ -29,6 +29,7 @@ class NetSocketConnect implements Connect {
   NetSocketConnect(NetSocket socket, RecordCodec recordCodec) {
     this.socket = socket;
     this.recordCodec = recordCodec;
+    initSocketCloseHandler();
     initSocketHandler();
   }
 
