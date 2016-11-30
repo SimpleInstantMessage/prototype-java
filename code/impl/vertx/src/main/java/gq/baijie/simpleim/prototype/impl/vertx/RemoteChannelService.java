@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import gq.baijie.simpleim.prototype.business.common.ApplicationService;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.Record;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.RecordCodec;
 import io.vertx.core.Handler;
@@ -23,6 +24,8 @@ public class RemoteChannelService {
 
   private final Logger logger = LoggerFactory.getLogger(RemoteChannelService.class);
 
+  private final ApplicationService applicationService;
+
   @Inject
   RecordCodec recordCodec;
 
@@ -35,8 +38,16 @@ public class RemoteChannelService {
   private final PublishSubject<Record> records = PublishSubject.create();
 
   @Inject
-  public RemoteChannelService() {
+  public RemoteChannelService(ApplicationService applicationService) {
+    this.applicationService = applicationService;
     connect();
+    listenCloseEvent();
+  }
+
+  private void listenCloseEvent() {
+    applicationService.closeEventBus().subscribe(e -> {
+      vertx.close();
+    });
   }
 
   private void connect() {

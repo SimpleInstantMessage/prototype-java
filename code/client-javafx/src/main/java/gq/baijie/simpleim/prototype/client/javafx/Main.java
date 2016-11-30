@@ -10,6 +10,7 @@ public class Main {
 
   public static void main(String[] args) {
     JavafxApplication.launch(JavafxApplication.class, args);
+    INSTANCE.clientComponent.getApplicationService().close();
   }
 
 }
