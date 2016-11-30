@@ -13,10 +13,8 @@ public class MessageSwitchServer {
   public MessageSwitchServer() {
   }
 
-  public void onReceiveHandler(MessageSwitchServerHandle handle) {
-    final MessageSwitchService.Session session = messageSwitchService.connect();
-    session.receiveMessages().subscribe(handle::sendMessage);
-    handle.setOnReceiveRequestListener(session::sendMessage);
+  public void onReceiveHandle(ManagedConnect connect, MessageSwitchServerHandle handle) {
+    new MessageSwitchHandleServer(messageSwitchService, connect, handle);
   }
 
 }

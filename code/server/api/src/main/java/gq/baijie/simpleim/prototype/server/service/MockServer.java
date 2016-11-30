@@ -22,8 +22,8 @@ public class MockServer implements Server {
   private final PublishSubject<Connect> connects = PublishSubject.create();
 
   private final Connect mockConnect = new MockConnect(Arrays.asList(
-      new MockMessageSwitchServerHandle(),
-      new MockAccountServerHandle()
+      new MockAccountServerHandle(),
+      new MockMessageSwitchServerHandle()
   ));
 
   @Inject
