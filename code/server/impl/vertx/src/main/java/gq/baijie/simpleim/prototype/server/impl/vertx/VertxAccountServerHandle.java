@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import gq.baijie.simpleim.prototype.business.api.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.api.AccountService.RegisterResult;
 import gq.baijie.simpleim.prototype.server.impl.vertx.codec.AccountServerRequest;
@@ -21,7 +23,9 @@ public class VertxAccountServerHandle implements AccountServerHandle {
 
   private final NetSocketConnect connect;
 
-  OnReceiveRequestListener requestListener = null;
+  private String loggedInAccountId = null;
+
+  private OnReceiveRequestListener requestListener = null;
 
   public VertxAccountServerHandle(NetSocketConnect connect) {
     this.connect = connect;
@@ -65,6 +69,9 @@ public class VertxAccountServerHandle implements AccountServerHandle {
     }
     final LoginResult result =
         requestListener.onReceiveLoginRequest(parameters.accountId, parameters.password);
+    if (result == LoginResult.SUCCESS) {
+      loggedInAccountId = parameters.accountId;
+    }
     final Record responseRecord = Record.of(AccountServerResponse.of(requestId, result));
     writeResponse(responseRecord);
   }
@@ -74,6 +81,7 @@ public class VertxAccountServerHandle implements AccountServerHandle {
       return;
     }
     requestListener.onReceiveLogoutRequest(parameters.accountId);
+    loggedInAccountId = null;
     final Record responseRecord = Record.of(AccountServerResponse.of(requestId, (Void) null));
     writeResponse(responseRecord);
   }
@@ -94,6 +102,11 @@ public class VertxAccountServerHandle implements AccountServerHandle {
   @Override
   public void setOnReceiveRequestListener(OnReceiveRequestListener listener) {
     requestListener = listener;
+  }
+
+  @Nullable
+  String getLoggedInAccountId() {
+    return loggedInAccountId;
   }
 
 }

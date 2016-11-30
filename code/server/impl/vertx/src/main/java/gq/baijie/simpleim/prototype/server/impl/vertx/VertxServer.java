@@ -44,8 +44,9 @@ public class VertxServer implements Server {
 
     server.connectHandler(socket -> {
       NetSocketConnect connect = new NetSocketConnect(socket, recordCodec);
-      connect.addHandle(new VertxAccountServerHandle(connect));
-      connect.addHandle(new VertxMessageSwitchServerHandle(connect));
+      final VertxAccountServerHandle accountServerHandle = new VertxAccountServerHandle(connect);
+      connect.addHandle(accountServerHandle);
+      connect.addHandle(new VertxMessageSwitchServerHandle(connect, accountServerHandle));
       connects.onNext(connect);
     });
 
