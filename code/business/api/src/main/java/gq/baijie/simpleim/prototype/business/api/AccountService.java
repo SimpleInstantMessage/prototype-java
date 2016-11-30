@@ -25,7 +25,8 @@ public interface AccountService {
   enum LoginResult {
     SUCCESS,
     NO_ACCOUNT,
-    PASSWORD_ERROR
+    PASSWORD_ERROR,
+    HAVE_LOGGED_IN
   }
 
 }
