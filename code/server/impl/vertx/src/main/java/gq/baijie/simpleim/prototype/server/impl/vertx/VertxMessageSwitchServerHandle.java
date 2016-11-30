@@ -13,14 +13,10 @@ public class VertxMessageSwitchServerHandle implements MessageSwitchServerHandle
 
   private final NetSocketConnect connect;
 
-  private final VertxAccountServerHandle accountServerHandle;
-
   private OnReceiveRequestListener requestListener;
 
-  public VertxMessageSwitchServerHandle(NetSocketConnect connect,
-                                        VertxAccountServerHandle accountServerHandle) {
+  public VertxMessageSwitchServerHandle(NetSocketConnect connect) {
     this.connect = connect;
-    this.accountServerHandle = accountServerHandle;
     init();
   }
 
@@ -32,10 +28,6 @@ public class VertxMessageSwitchServerHandle implements MessageSwitchServerHandle
   }
 
   private void onReceiveMessage(Message message) {
-    if (accountServerHandle.getLoggedInAccountId() == null) {
-      logger.warn("ignore onReceiveMessage because not logged in");
-      return;
-    }
     if (requestListener != null) {
       requestListener.onReceiveMessage(message);
     } else {
@@ -50,10 +42,6 @@ public class VertxMessageSwitchServerHandle implements MessageSwitchServerHandle
 
   @Override
   public void sendMessage(Message message) {
-    if (accountServerHandle.getLoggedInAccountId() == null) {
-      logger.warn("ignore sendMessage because not logged in");
-      return;
-    }
     connect.writeRecord(Record.of(message));
   }
 
