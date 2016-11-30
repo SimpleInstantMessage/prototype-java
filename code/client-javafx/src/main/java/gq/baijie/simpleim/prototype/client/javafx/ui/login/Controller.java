@@ -2,7 +2,7 @@ package gq.baijie.simpleim.prototype.client.javafx.ui.login;
 
 import gq.baijie.simpleim.prototype.client.javafx.Main;
 import gq.baijie.simpleim.prototype.business.common.AccountService;
-import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
+import gq.baijie.simpleim.prototype.business.client.SessionService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;

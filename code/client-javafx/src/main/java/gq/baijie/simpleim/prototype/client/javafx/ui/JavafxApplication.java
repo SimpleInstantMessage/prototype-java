@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import gq.baijie.simpleim.prototype.client.javafx.Main;
-import gq.baijie.simpleim.prototype.client.javafx.service.SessionService;
+import gq.baijie.simpleim.prototype.business.client.SessionService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.client.javafx.service;
+package gq.baijie.simpleim.prototype.business.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
