@@ -36,6 +36,10 @@ public class AccountSessionHandler implements SessionHandler {
   }
 
   private void onLoggedIn(@Nonnull String accountId) {
+    if (loggedInAccountId != null) {
+      accountService.logout(loggedInAccountId);
+      onLoggedOut();
+    }
     loggedInAccountId = accountId;
   }
 
