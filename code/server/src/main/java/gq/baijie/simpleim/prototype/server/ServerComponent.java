@@ -5,10 +5,10 @@ import javax.inject.Singleton;
 import dagger.Component;
 import gq.baijie.simpleim.prototype.business.common.MemoryAccountModule;
 import gq.baijie.simpleim.prototype.business.common.MessageSwitchModule;
+import gq.baijie.simpleim.prototype.business.server.Server;
+import gq.baijie.simpleim.prototype.business.server.ServerManager;
 import gq.baijie.simpleim.prototype.impl.vertx.VertxServerModule;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.CodecModule;
-import gq.baijie.simpleim.prototype.business.server.ConnectServer;
-import gq.baijie.simpleim.prototype.business.server.Server;
 
 @Singleton
 @Component(modules = {
@@ -22,6 +22,6 @@ public interface ServerComponent {
 
   Server getServer();
 
-  ConnectServer getConnectServer();
+  ServerManager getServerManager();
 
 }

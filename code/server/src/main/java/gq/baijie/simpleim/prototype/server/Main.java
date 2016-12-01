@@ -1,7 +1,7 @@
 package gq.baijie.simpleim.prototype.server;
 
-import gq.baijie.simpleim.prototype.business.server.ConnectServer;
 import gq.baijie.simpleim.prototype.business.server.Server;
+import gq.baijie.simpleim.prototype.business.server.ServerManager;
 
 public class Main implements Runnable {
 
@@ -16,9 +16,9 @@ public class Main implements Runnable {
   @Override
   public void run() {
     final Server server = serverComponent.getServer();
-    final ConnectServer connectServer = serverComponent.getConnectServer();
-    server.connects().subscribe(connectServer::onNewConnect);
-    server.start();
+    final ServerManager serverManager = serverComponent.getServerManager();
+    serverManager.manage(server);
+    serverManager.startAllServer();
   }
 
 }
