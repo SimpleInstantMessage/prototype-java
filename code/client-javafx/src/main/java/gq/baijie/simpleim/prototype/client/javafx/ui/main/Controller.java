@@ -7,11 +7,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import gq.baijie.simpleim.prototype.business.common.Message;
-import gq.baijie.simpleim.prototype.client.javafx.Main;
-import gq.baijie.simpleim.prototype.business.common.AccountService;
+import gq.baijie.simpleim.prototype.business.client.AccountService;
 import gq.baijie.simpleim.prototype.business.client.ConversationService;
 import gq.baijie.simpleim.prototype.business.client.SessionService;
+import gq.baijie.simpleim.prototype.business.common.Message;
+import gq.baijie.simpleim.prototype.client.javafx.Main;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -55,7 +55,7 @@ public class Controller {
 
   @FXML
   private void initialize() {
-    final String currentAccount = sessionService.getAccountId();
+    final String currentAccount = sessionService.getLoggedInAccountId();
     this.accountId.setText(currentAccount);
     //TODO add onlineUserList
 //    onlineUserList.getItems().setAll(accountService.onlineUsers());
@@ -112,7 +112,7 @@ public class Controller {
     }
 
     final Set<String> receiverIds;
-    final String currentAccount = sessionService.getAccountId();
+    final String currentAccount = sessionService.getLoggedInAccountId();
     final Set<String> currentAccountGroup = Stream.of(currentAccount).collect(toSet());
     if (currentAccountGroup.equals(currentConversation.getParticipantIds())) {
       receiverIds = currentAccountGroup;

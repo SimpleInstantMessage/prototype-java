@@ -10,11 +10,10 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import gq.baijie.simpleim.prototype.business.common.AccountService;
-import gq.baijie.simpleim.prototype.business.common.Message;
+import gq.baijie.simpleim.prototype.business.client.AccountService.LoginState;
 import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
+import gq.baijie.simpleim.prototype.business.common.Message;
 import rx.Observable;
-import rx.subjects.PublishSubject;
 
 @Singleton
 @NotThreadSafe
@@ -22,24 +21,23 @@ public class SessionService {
 
   final Logger logger = LoggerFactory.getLogger(SessionService.class);
 
-  @Inject
-  AccountService accountService;
-  @Inject
-  ChatService chatService;
+  private final AccountService accountService;
+  private final ChatService chatService;
 
-  State state = State.LOGGED_OUT;
-  private PublishSubject<ChangeEvent<State>> stateChangeEvents = PublishSubject.create();
-  /* when state == LOGGED_IN */
-  String accountId;
   final Observable<Message> receiveMessageEventBus;
   ConversationService conversationService;
   String token;//TODO use this?
 
   @Inject
-  public SessionService(ChatService chatService) {
+  public SessionService(AccountService accountService, ChatService chatService) {
+    this.accountService = accountService;
+    this.chatService = chatService;
+    // bind AccountService
+    bindAccountService();
+    // bind ChatService
     receiveMessageEventBus = chatService.newMessageEventBus()
-        .filter(m -> state == State.LOGGED_IN)
-        .filter(m -> m.getReceivers().stream().anyMatch(r -> accountId.equals(r.getReceiverId())));
+        .filter(m -> haveLoggedIn())
+        .filter(m -> m.getReceivers().stream().anyMatch(r -> getLoggedInAccountId().equals(r.getReceiverId())));
     //TODO release receiveMessageEventBus (onFinish and unsubscribe)
     receiveMessageEventBus.subscribe(m -> {
       if (conversationService != null) {
@@ -48,16 +46,22 @@ public class SessionService {
     });
   }
 
-  public State getState() {
-    return state;
+  private void bindAccountService() {
+    accountService.loginStateEventBus().subscribe(state -> {
+      if (state == LoginState.LOGGED_IN) {
+        onLoggedIn();
+      } else if (state == LoginState.LOGGED_OUT) {
+        onLoggedOut();
+      }
+    });
   }
 
-  public String getAccountId() {
-    return accountId;
+  private void onLoggedIn() {
+    conversationService = new ConversationService();
   }
 
-  public Observable<ChangeEvent<State>> getStateChangeEvents() {
-    return stateChangeEvents.asObservable();
+  private void onLoggedOut() {
+    conversationService = null;
   }
 
   public ConversationService getConversationService() {
@@ -65,47 +69,31 @@ public class SessionService {
   }
 
   public LoginResult login(@Nonnull String accountId, @Nonnull String password) {
-    if (haveLoggedIn()) {
-      throw new IllegalStateException("have logged in");
-    }
-    final LoginResult result = accountService.login(accountId, password);
-    if (result == LoginResult.SUCCESS) {
-      gotoHaveLoggedInState(accountId);
-    }
-    return result;
+    return accountService.login(accountId, password);
   }
 
   public void logout() {
-    accountService.logout(getAccountId());
-    gotoHaveLoggedOutState();
-  }
-
-  private void gotoHaveLoggedInState(@Nonnull String accountId) {//TODO token?
-    this.accountId = accountId;
-    conversationService = new ConversationService();
-    changeState(State.LOGGED_IN);
-  }
-
-  private void gotoHaveLoggedOutState() {
-    conversationService = null;
-    accountId = null;
-    changeState(State.LOGGED_OUT);
-  }
-
-  private void changeState(State newState) {
-    if (newState != state) {
-      final State oldState = state;
-      state = newState;
-      stateChangeEvents.onNext(new ChangeEvent<>(oldState, newState));
-    }
+    accountService.logout();
   }
 
   public boolean haveLoggedIn() {
-    return state == State.LOGGED_IN;
+    return accountService.haveLoggedIn();
+  }
+
+  public LoginState getLoginState() {
+    return accountService.getLoginState();
+  }
+
+  public Observable<LoginState> loginStateEventBus() {
+    return accountService.loginStateEventBus();
+  }
+
+  public String getLoggedInAccountId() {
+    return accountService.getLoggedInAccountId();
   }
 
   public Message sendMessage(String message, Set<String> receiverIds) {
-    final String accountId = getAccountId();
+    final String accountId = getLoggedInAccountId();
     if (accountId != null) {
       final Message sentMsg = chatService.sendMessage(accountId, message, receiverIds);
       conversationService.logNewMessage(sentMsg);
@@ -113,22 +101,6 @@ public class SessionService {
     } else {
       logger.error("send message when haven't logged in", new IllegalStateException());
       return null;
-    }
-  }
-
-  public enum State {
-    LOGGED_IN,
-    LOGGED_OUT
-  }
-
-  public static class ChangeEvent<T> {
-
-    public final T oldValue;
-    public final T newValue;
-
-    public ChangeEvent(T oldValue, T newValue) {
-      this.oldValue = oldValue;
-      this.newValue = newValue;
     }
   }
 

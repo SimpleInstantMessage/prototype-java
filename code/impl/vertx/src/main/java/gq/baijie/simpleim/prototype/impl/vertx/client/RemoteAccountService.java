@@ -6,14 +6,16 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import gq.baijie.simpleim.prototype.business.common.AccountService;
+import gq.baijie.simpleim.prototype.business.client.AbstractAccountService;
+import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
+import gq.baijie.simpleim.prototype.business.common.AccountService.RegisterResult;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerResponse;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.Record;
 import rx.subjects.PublishSubject;
 
 @Singleton
-public class RemoteAccountService implements AccountService {
+public class RemoteAccountService extends AbstractAccountService {
 
   private final RemoteChannelService channelService;
 
@@ -50,7 +52,7 @@ public class RemoteAccountService implements AccountService {
   }
 
   @Override
-  public LoginResult login(@Nonnull String accountId, @Nonnull String password) {
+  protected LoginResult doLogin(@Nonnull String accountId, @Nonnull String password) {
     Record requestRecord = Record.of(AccountServerRequest.loginRequest(accountId, password));
     writeRecord(requestRecord);
     return responses
@@ -63,7 +65,7 @@ public class RemoteAccountService implements AccountService {
   }
 
   @Override
-  public void logout(@Nonnull String accountId) {
+  protected void doLogout(@Nonnull String accountId) {
     Record requestRecord = Record.of(AccountServerRequest.logoutRequest(accountId));
     writeRecord(requestRecord);
   }

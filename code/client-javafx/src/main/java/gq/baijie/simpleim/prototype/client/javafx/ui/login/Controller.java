@@ -1,8 +1,10 @@
 package gq.baijie.simpleim.prototype.client.javafx.ui.login;
 
-import gq.baijie.simpleim.prototype.client.javafx.Main;
-import gq.baijie.simpleim.prototype.business.common.AccountService;
+import gq.baijie.simpleim.prototype.business.client.AccountService;
 import gq.baijie.simpleim.prototype.business.client.SessionService;
+import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
+import gq.baijie.simpleim.prototype.business.common.AccountService.RegisterResult;
+import gq.baijie.simpleim.prototype.client.javafx.Main;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -33,8 +35,8 @@ public class Controller {
     final String accountId = accountIdInput.getText();
     final String password = passwordInput.getText();
     if (validateInput(accountId, password)) {
-      AccountService.RegisterResult registerResult = accountService.register(accountId, password);
-      if (registerResult != AccountService.RegisterResult.SUCCESS) {
+      RegisterResult registerResult = accountService.register(accountId, password);
+      if (registerResult != RegisterResult.SUCCESS) {
         errorMessageOutput.setText(registerResult.toString());
         errorMessageOutput.setVisible(true);
       } else {
@@ -53,8 +55,8 @@ public class Controller {
     final String accountId = accountIdInput.getText();
     final String password = passwordInput.getText();
     if (validateInput(accountId, password)) {
-      final AccountService.LoginResult loginResult = sessionService.login(accountId, password);
-      if (loginResult != AccountService.LoginResult.SUCCESS) {
+      final LoginResult loginResult = sessionService.login(accountId, password);
+      if (loginResult != LoginResult.SUCCESS) {
         errorMessageOutput.setText(loginResult.toString());
         errorMessageOutput.setVisible(true);
       }

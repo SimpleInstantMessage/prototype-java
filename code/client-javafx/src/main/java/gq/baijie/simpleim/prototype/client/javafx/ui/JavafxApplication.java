@@ -1,16 +1,22 @@
 package gq.baijie.simpleim.prototype.client.javafx.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URL;
 
-import gq.baijie.simpleim.prototype.client.javafx.Main;
+import gq.baijie.simpleim.prototype.business.client.AccountService;
 import gq.baijie.simpleim.prototype.business.client.SessionService;
+import gq.baijie.simpleim.prototype.client.javafx.Main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class JavafxApplication extends Application {
+
+  private final Logger logger = LoggerFactory.getLogger(JavafxApplication.class);
 
   Stage primaryStage;
 
@@ -19,16 +25,16 @@ public class JavafxApplication extends Application {
     this.primaryStage = primaryStage;
 
     final SessionService sessionService = Main.INSTANCE.clientComponent.getSessionService();
-    sessionService.getStateChangeEvents().subscribe(event->{
-      System.out.println("oldState: "+event.oldValue+", newState: "+event.newValue);
-      gotoSceneAccroddingBySessionState(event.newValue);
+    sessionService.loginStateEventBus().subscribe(state -> {
+      logger.info("newState: {}", state);
+      gotoSceneAccordingByLoginState(state);
     });
-    gotoSceneAccroddingBySessionState(sessionService.getState());
+    gotoSceneAccordingByLoginState(sessionService.getLoginState());
 
     primaryStage.show();
   }
 
-  private void gotoSceneAccroddingBySessionState(SessionService.State state) {
+  private void gotoSceneAccordingByLoginState(AccountService.LoginState state) {
     switch (state) {
       case LOGGED_OUT:
         gotoLoginScene();
