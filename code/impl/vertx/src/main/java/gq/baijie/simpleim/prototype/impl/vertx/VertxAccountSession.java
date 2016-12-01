@@ -7,7 +7,7 @@ import java.util.List;
 
 import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.common.AccountService.RegisterResult;
-import gq.baijie.simpleim.prototype.business.server.AccountSession;
+import gq.baijie.simpleim.prototype.business.server.session.AccountSession;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest.LoginRequestParameters;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest.LogoutRequestParameters;

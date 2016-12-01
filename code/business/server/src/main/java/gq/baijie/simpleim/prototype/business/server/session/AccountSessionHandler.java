@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.business.server;
+package gq.baijie.simpleim.prototype.business.server.session;
 
 import java.util.List;
 
@@ -7,7 +7,9 @@ import javax.annotation.Nonnull;
 import gq.baijie.simpleim.prototype.business.common.AccountService;
 import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.common.AccountService.RegisterResult;
-import gq.baijie.simpleim.prototype.business.server.AccountSession.OnReceiveRequestListener;
+import gq.baijie.simpleim.prototype.business.server.ManagedConnect;
+import gq.baijie.simpleim.prototype.business.server.SessionHandler;
+import gq.baijie.simpleim.prototype.business.server.session.AccountSession.OnReceiveRequestListener;
 
 public class AccountSessionHandler implements SessionHandler {
   private final AccountService accountService;

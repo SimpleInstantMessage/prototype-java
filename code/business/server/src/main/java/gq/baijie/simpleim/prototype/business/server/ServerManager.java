@@ -9,6 +9,10 @@ import javax.inject.Singleton;
 import gq.baijie.simpleim.prototype.business.common.AccountService;
 import gq.baijie.simpleim.prototype.business.common.MessageSwitchService;
 import gq.baijie.simpleim.prototype.business.server.Server.Connect;
+import gq.baijie.simpleim.prototype.business.server.session.AccountSession;
+import gq.baijie.simpleim.prototype.business.server.session.AccountSessionHandler;
+import gq.baijie.simpleim.prototype.business.server.session.MessageSwitchSession;
+import gq.baijie.simpleim.prototype.business.server.session.MessageSwitchSessionHandler;
 
 @Singleton
 public class ServerManager {

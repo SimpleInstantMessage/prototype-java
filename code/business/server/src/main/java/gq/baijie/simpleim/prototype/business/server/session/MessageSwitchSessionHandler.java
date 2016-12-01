@@ -1,9 +1,11 @@
-package gq.baijie.simpleim.prototype.business.server;
+package gq.baijie.simpleim.prototype.business.server.session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gq.baijie.simpleim.prototype.business.common.MessageSwitchService;
+import gq.baijie.simpleim.prototype.business.server.ManagedConnect;
+import gq.baijie.simpleim.prototype.business.server.SessionHandler;
 
 public class MessageSwitchSessionHandler implements SessionHandler {
 

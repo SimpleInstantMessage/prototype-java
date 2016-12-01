@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.business.server;
+package gq.baijie.simpleim.prototype.business.server.mock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,9 @@ import javax.inject.Inject;
 
 import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.common.Message;
+import gq.baijie.simpleim.prototype.business.server.Server;
+import gq.baijie.simpleim.prototype.business.server.session.AccountSession;
+import gq.baijie.simpleim.prototype.business.server.session.MessageSwitchSession;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
