@@ -13,7 +13,7 @@ public class ManagedConnect {
 
   private final PublishSubject<ManagedConnect> closeEvents = PublishSubject.create();
 
-  private final Map<Class<?>, Object> handleServers = new HashMap<>();
+  private final Map<Class<?>, Object> sessionHandlers = new HashMap<>();
 
   ManagedConnect(Connect connect) {
     this.connect = connect;
@@ -24,15 +24,15 @@ public class ManagedConnect {
     return closeEvents;
   }
 
-  public void registerHandleServer(Object handleServer) {
-    handleServers.put(handleServer.getClass(), handleServer);
-    if (handleServer instanceof HandleServer) {
-      ((HandleServer) handleServer).bindConnect(this);
+  public void registerSessionHandler(Object sessionHandler) {
+    sessionHandlers.put(sessionHandler.getClass(), sessionHandler);
+    if (sessionHandler instanceof SessionHandler) {
+      ((SessionHandler) sessionHandler).bindConnect(this);
     }
   }
 
-  public <T> T getHandleServer(Class<T> clazz) {
-    return (T) handleServers.get(clazz);
+  public <T> T getSessionHandler(Class<T> clazz) {
+    return (T) sessionHandlers.get(clazz);
   }
 
 }

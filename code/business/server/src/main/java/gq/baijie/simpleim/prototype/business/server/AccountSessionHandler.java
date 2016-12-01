@@ -7,16 +7,16 @@ import javax.annotation.Nonnull;
 import gq.baijie.simpleim.prototype.business.common.AccountService;
 import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.common.AccountService.RegisterResult;
-import gq.baijie.simpleim.prototype.business.server.AccountServerHandle.OnReceiveRequestListener;
+import gq.baijie.simpleim.prototype.business.server.AccountSession.OnReceiveRequestListener;
 
-public class AccountHandleServer implements HandleServer {
+public class AccountSessionHandler implements SessionHandler {
   private final AccountService accountService;
 
   private String loggedInAccountId;
 
-  public AccountHandleServer(AccountService accountService, AccountServerHandle handle) {
+  public AccountSessionHandler(AccountService accountService, AccountSession session) {
     this.accountService = accountService;
-    init(handle);
+    init(session);
   }
 
   @Override
@@ -29,7 +29,7 @@ public class AccountHandleServer implements HandleServer {
     });
   }
 
-  private void init(AccountServerHandle handle) {
+  private void init(AccountSession handle) {
     handle.setOnReceiveRequestListener(new RequestListener());
   }
 

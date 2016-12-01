@@ -2,7 +2,7 @@ package gq.baijie.simpleim.prototype.business.server;
 
 import gq.baijie.simpleim.prototype.business.common.Message;
 
-public interface MessageSwitchServerHandle {
+public interface MessageSwitchSession extends Server.Connect.Session {
 
   void setOnReceiveRequestListener(OnReceiveRequestListener listener);
 

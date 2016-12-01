@@ -18,7 +18,7 @@ class NetSocketConnect implements Connect {
 
   final NetSocket socket;
 
-  private final List<Object> handles = new LinkedList<>();
+  private final List<Session> sessions = new LinkedList<>();
 
   private final RecordCodec recordCodec;
 
@@ -86,13 +86,13 @@ class NetSocketConnect implements Connect {
     socket.write(frame);
   }
 
-  void addHandle(Object handle) {
-    handles.add(handle);
+  void addSession(Session session) {
+    sessions.add(session);
   }
 
   @Override
-  public Observable<Object> handles() {
-    return Observable.from(handles);
+  public Observable<Session> sessions() {
+    return Observable.from(sessions);
   }
 
   @Override

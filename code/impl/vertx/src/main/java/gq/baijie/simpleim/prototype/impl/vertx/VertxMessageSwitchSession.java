@@ -5,17 +5,17 @@ import org.slf4j.LoggerFactory;
 
 import gq.baijie.simpleim.prototype.business.common.Message;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.Record;
-import gq.baijie.simpleim.prototype.business.server.MessageSwitchServerHandle;
+import gq.baijie.simpleim.prototype.business.server.MessageSwitchSession;
 
-public class VertxMessageSwitchServerHandle implements MessageSwitchServerHandle {
+public class VertxMessageSwitchSession implements MessageSwitchSession {
 
-  private final Logger logger = LoggerFactory.getLogger(VertxMessageSwitchServerHandle.class);
+  private final Logger logger = LoggerFactory.getLogger(VertxMessageSwitchSession.class);
 
   private final NetSocketConnect connect;
 
   private OnReceiveRequestListener requestListener;
 
-  public VertxMessageSwitchServerHandle(NetSocketConnect connect) {
+  public VertxMessageSwitchSession(NetSocketConnect connect) {
     this.connect = connect;
     init();
   }

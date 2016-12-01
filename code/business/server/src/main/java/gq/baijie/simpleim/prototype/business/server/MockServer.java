@@ -22,8 +22,8 @@ public class MockServer implements Server {
   private final PublishSubject<Connect> connects = PublishSubject.create();
 
   private final Connect mockConnect = new MockConnect(Arrays.asList(
-      new MockAccountServerHandle(),
-      new MockMessageSwitchServerHandle()
+      new MockAccountSession(),
+      new MockMessageSwitchSession()
   ));
 
   @Inject
@@ -50,10 +50,10 @@ public class MockServer implements Server {
 
   private class MockConnect implements Connect {
 
-    private final List<Object> handles;
+    private final List<Session> sessions;
 
-    private MockConnect(List<Object> handles) {
-      this.handles = handles;
+    private MockConnect(List<Session> sessions) {
+      this.sessions = sessions;
     }
 
     @Override
@@ -62,12 +62,12 @@ public class MockServer implements Server {
     }
 
     @Override
-    public Observable<Object> handles() {
-      return Observable.from(handles);
+    public Observable<Session> sessions() {
+      return Observable.from(sessions);
     }
   }
 
-  private class MockMessageSwitchServerHandle implements MessageSwitchServerHandle {
+  private class MockMessageSwitchSession implements MessageSwitchSession {
 
     @Override
     public void setOnReceiveRequestListener(OnReceiveRequestListener listener) {
@@ -82,12 +82,12 @@ public class MockServer implements Server {
     }
   }
 
-  private class MockAccountServerHandle implements AccountServerHandle {
+  private class MockAccountSession implements AccountSession {
 
     @Override
     public void setOnReceiveRequestListener(OnReceiveRequestListener listener) {
       final LoginResult result = listener.onReceiveLoginRequest("baijie", "baijie");
-      logger.info("MockAccountServerHandle receive LoginResult: {}", result);
+      logger.info("MockAccountSession receive LoginResult: {}", result);
     }
   }
 

@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.common.AccountService.RegisterResult;
 
-public interface AccountServerHandle {
+public interface AccountSession extends Server.Connect.Session {
 
   void setOnReceiveRequestListener(OnReceiveRequestListener listener);
 

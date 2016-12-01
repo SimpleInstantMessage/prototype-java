@@ -7,23 +7,23 @@ import java.util.List;
 
 import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import gq.baijie.simpleim.prototype.business.common.AccountService.RegisterResult;
+import gq.baijie.simpleim.prototype.business.server.AccountSession;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest.LoginRequestParameters;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest.LogoutRequestParameters;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerRequest.RegisterRequestParameters;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.AccountServerResponse;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.Record;
-import gq.baijie.simpleim.prototype.business.server.AccountServerHandle;
 
-public class VertxAccountServerHandle implements AccountServerHandle {
+public class VertxAccountSession implements AccountSession {
 
-  private final Logger logger = LoggerFactory.getLogger(VertxAccountServerHandle.class);
+  private final Logger logger = LoggerFactory.getLogger(VertxAccountSession.class);
 
   private final NetSocketConnect connect;
 
   OnReceiveRequestListener requestListener = null;
 
-  public VertxAccountServerHandle(NetSocketConnect connect) {
+  public VertxAccountSession(NetSocketConnect connect) {
     this.connect = connect;
     init();
   }

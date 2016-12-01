@@ -14,7 +14,9 @@ public interface Server {
 
   interface Connect {
     void setOnCloseListener(Consumer<Connect> listener);
-    Observable<Object> handles();//TODO fire new handle multiple times?
+    Observable<Session> sessions();//TODO fire new session multiple times?
+
+    interface Session {}
   }
 
 }

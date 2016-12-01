@@ -36,17 +36,17 @@ public class ServerManager {
     final ManagedConnect managedConnect = new ManagedConnect(connect);
     connects.add(managedConnect);
     managedConnect.getCloseEvents().subscribe(connects::remove);
-    connect.handles().subscribe(handle -> onNewHandle(managedConnect, handle));
+    connect.sessions().subscribe(session -> onNewHandle(managedConnect, session));
   }
 
   private void onNewHandle(ManagedConnect connect, Object handle) {
-    if (handle instanceof MessageSwitchServerHandle) {
-      connect.registerHandleServer(
-          new MessageSwitchHandleServer(messageSwitchService, (MessageSwitchServerHandle) handle));
+    if (handle instanceof MessageSwitchSession) {
+      connect.registerSessionHandler(
+          new MessageSwitchSessionHandler(messageSwitchService, (MessageSwitchSession) handle));
     }
-    if (handle instanceof AccountServerHandle) {
-      connect.registerHandleServer(
-          new AccountHandleServer(accountService, (AccountServerHandle) handle));
+    if (handle instanceof AccountSession) {
+      connect.registerSessionHandler(
+          new AccountSessionHandler(accountService, (AccountSession) handle));
     }
   }
 
