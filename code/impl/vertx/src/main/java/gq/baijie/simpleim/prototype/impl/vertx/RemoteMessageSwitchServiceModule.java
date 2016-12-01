@@ -5,7 +5,7 @@ import dagger.Provides;
 import gq.baijie.simpleim.prototype.business.common.MessageSwitchService;
 
 @Module
-public class RemoteMessageSwitchModule {
+public class RemoteMessageSwitchServiceModule {
 
   @Provides
   MessageSwitchService provideMessageSwitchService(RemoteMessageSwitchService service) {

@@ -7,7 +7,7 @@ import gq.baijie.simpleim.prototype.business.common.AccountService;
 import gq.baijie.simpleim.prototype.business.client.SessionService;
 import gq.baijie.simpleim.prototype.business.common.ApplicationService;
 import gq.baijie.simpleim.prototype.impl.vertx.RemoteAccountServiceModule;
-import gq.baijie.simpleim.prototype.impl.vertx.RemoteMessageSwitchModule;
+import gq.baijie.simpleim.prototype.impl.vertx.RemoteMessageSwitchServiceModule;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.CodecModule;
 
 @Singleton
@@ -16,7 +16,7 @@ import gq.baijie.simpleim.prototype.impl.vertx.codec.CodecModule;
     CodecModule.class,
     RemoteAccountServiceModule.class,
 //    MessageSwitchModule.class
-    RemoteMessageSwitchModule.class
+    RemoteMessageSwitchServiceModule.class
 })
 public interface ClientComponent {
 
