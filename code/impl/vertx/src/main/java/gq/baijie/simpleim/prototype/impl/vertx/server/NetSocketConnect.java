@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.impl.vertx;
+package gq.baijie.simpleim.prototype.impl.vertx.server;
 
 import java.util.LinkedList;
 import java.util.List;

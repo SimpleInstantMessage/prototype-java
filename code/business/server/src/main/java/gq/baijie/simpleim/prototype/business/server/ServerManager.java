@@ -30,7 +30,8 @@ public class ServerManager {
 
   public ManagedServer manage(Server server) {
     final List<ManagedConnect> connects = new LinkedList<>();
-    server.connects().subscribe(connect -> onNewConnect(connect, connects));//TODO
+    server.connects().subscribe(connect -> onNewConnect(connect, connects));
+    //TODO let server weak reference to connects
     final ManagedServer managedServer = new ManagedServer(server, connects);
     servers.add(managedServer);
     return managedServer;

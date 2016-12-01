@@ -1,4 +1,4 @@
-package gq.baijie.simpleim.prototype.impl.vertx;
+package gq.baijie.simpleim.prototype.impl.vertx.client;
 
 import dagger.Module;
 import dagger.Provides;

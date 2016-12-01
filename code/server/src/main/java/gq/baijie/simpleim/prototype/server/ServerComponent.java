@@ -7,7 +7,7 @@ import gq.baijie.simpleim.prototype.business.common.MemoryAccountModule;
 import gq.baijie.simpleim.prototype.business.common.MessageSwitchModule;
 import gq.baijie.simpleim.prototype.business.server.Server;
 import gq.baijie.simpleim.prototype.business.server.ServerManager;
-import gq.baijie.simpleim.prototype.impl.vertx.VertxServerModule;
+import gq.baijie.simpleim.prototype.impl.vertx.server.VertxServerModule;
 import gq.baijie.simpleim.prototype.impl.vertx.codec.CodecModule;
 
 @Singleton
