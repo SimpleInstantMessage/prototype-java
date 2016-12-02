@@ -9,4 +9,6 @@ dependencies {
     compile project(':business:common')
     compile project(':business:client')
     compile project(':impl:vertx')
+
+    compile 'io.reactivex:rxjavafx:0.3.0'
 }

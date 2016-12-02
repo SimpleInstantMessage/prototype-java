@@ -13,6 +13,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import rx.schedulers.JavaFxScheduler;
 
 public class JavafxApplication extends Application {
 
@@ -25,7 +26,8 @@ public class JavafxApplication extends Application {
     this.primaryStage = primaryStage;
 
     final SessionService sessionService = Main.INSTANCE.clientComponent.getSessionService();
-    sessionService.loginStateEventBus().subscribe(state -> {
+    sessionService.loginStateEventBus()
+        .observeOn(JavaFxScheduler.getInstance()).subscribe(state -> {
       logger.info("newState: {}", state);
       gotoSceneAccordingByLoginState(state);
     });

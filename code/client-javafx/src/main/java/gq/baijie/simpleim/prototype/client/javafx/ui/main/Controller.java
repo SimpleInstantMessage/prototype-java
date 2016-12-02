@@ -18,6 +18,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import rx.Subscription;
+import rx.schedulers.JavaFxScheduler;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -75,7 +76,8 @@ public class Controller {
     // clear log of other conversation
     conversationLog.setText("");
     // append new received messages
-    conversationSubscription = conversation.getAddNewMessageEvents().subscribe(m -> {
+    conversationSubscription = conversation.getAddNewMessageEvents()
+        .observeOn(JavaFxScheduler.getInstance()).subscribe(m -> {
       conversationLog.appendText(toConversationLogItem(m) + "\n");//TODO improve this
     });
     // show historyLog
