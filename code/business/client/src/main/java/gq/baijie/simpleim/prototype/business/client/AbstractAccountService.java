@@ -9,11 +9,13 @@ import gq.baijie.simpleim.prototype.business.common.AccountService.LoginResult;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
+import static gq.baijie.simpleim.prototype.business.client.AccountService.LoginState.LOGGED_OUT;
+
 public abstract class AbstractAccountService implements AccountService {
 
   private final Logger logger = LoggerFactory.getLogger(AbstractAccountService.class);
 
-  private final BehaviorSubject<LoginState> loginStateEventBus = BehaviorSubject.create();
+  private final BehaviorSubject<LoginState> loginStateEventBus = BehaviorSubject.create(LOGGED_OUT);
 
   private String loggedInAccountId = null;
 
@@ -43,7 +45,7 @@ public abstract class AbstractAccountService implements AccountService {
       logger.error("haven't logged in", new IllegalStateException());
       return;
     }
-    changeLoginState(LoginState.LOGGED_OUT);
+    changeLoginState(LOGGED_OUT);
     final String loggedOutAccountId = loggedInAccountId;
     loggedInAccountId = null;
     doLogout(loggedOutAccountId);
