@@ -24,14 +24,20 @@ public class RemoteAccountService extends AbstractAccountService {
   @Inject
   public RemoteAccountService(RemoteChannelService channelService) {
     this.channelService = channelService;
-    init();
+    bindChannelService();
   }
 
-  private void init() {
+  private void bindChannelService() {
+    // receive AccountServerResponse records
     channelService.records()
         .map(record -> record.data)
         .ofType(AccountServerResponse.class)
         .subscribe(responses);
+    // to logged out state when lose connection
+    channelService.getConnectStateEventBus()
+        .filter(connectState -> connectState == RemoteChannelService.ConnectState.OFF_LINE)
+        .filter(connectState -> haveLoggedIn())
+        .subscribe(connectState -> changeLoginState(LoginState.LOGGED_OUT));
   }
 
   private void writeRecord(Record record) {

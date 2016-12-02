@@ -17,7 +17,12 @@ import io.vertx.core.net.NetClientOptions;
 import io.vertx.core.net.NetSocket;
 import io.vertx.core.parsetools.RecordParser;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static gq.baijie.simpleim.prototype.impl.vertx.client.RemoteChannelService.ConnectState.CONNECTED;
+import static gq.baijie.simpleim.prototype.impl.vertx.client.RemoteChannelService.ConnectState.CONNECTING;
+import static gq.baijie.simpleim.prototype.impl.vertx.client.RemoteChannelService.ConnectState.OFF_LINE;
 
 @Singleton
 public class RemoteChannelService {
@@ -34,6 +39,7 @@ public class RemoteChannelService {
       vertx.createNetClient(new NetClientOptions().setConnectTimeout(10000));
 
   private NetSocket socket = null;
+  private final BehaviorSubject<ConnectState> connectState = BehaviorSubject.create(OFF_LINE);
 
   private final PublishSubject<Record> records = PublishSubject.create();
 
@@ -51,13 +57,21 @@ public class RemoteChannelService {
   }
 
   private void connect() {
+    if (connectState.getValue() != ConnectState.OFF_LINE) {
+      logger.warn("call connect() but isn't in OFF_LINE state now");
+      return;
+    }
+    connectState.onNext(CONNECTING);
     client.connect(4321, "localhost", res -> {
       if (res.succeeded()) {
         logger.info("RemoteAccountService Connected!");
         socket = res.result();
         initSocketHandler();
+        initSocketCloseHandler();
+        connectState.onNext(CONNECTED);
       } else {
         logger.warn("RemoteAccountService Failed to connect", res.cause());
+        connectState.onNext(OFF_LINE);
       }
     });
   }
@@ -84,6 +98,12 @@ public class RemoteChannelService {
     parser.setOutput(handler);
     socket.handler(parser);
   }
+  private void initSocketCloseHandler() {
+    socket.closeHandler(event -> {
+      connectState.onNext(OFF_LINE);
+      socket = null;
+    });
+  }
 
   private void onReceiveRecord(Buffer record) {
     final Record decodeRecord = recordCodec.decodeRecord(record);
@@ -94,10 +114,15 @@ public class RemoteChannelService {
     records.onNext(record);
   }
 
+  Observable<ConnectState> getConnectStateEventBus() {
+    return connectState;
+  }
+
   Observable<Record> records() {
     return records;
   }
 
+  //TODO open connect
   void writeRecord(final Record record) {
     final Buffer encodedRecord = recordCodec.encodeToRecord(record);
     final Buffer frame = Buffer.buffer()
@@ -108,6 +133,12 @@ public class RemoteChannelService {
     } else {
       logger.warn("because socket == null, write this record to /dev/null: {}", record);
     }
+  }
+
+  enum ConnectState {
+    CONNECTING,
+    CONNECTED,
+    OFF_LINE
   }
 
 }
